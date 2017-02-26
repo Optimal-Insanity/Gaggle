@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.gaggle.snoretrain.gaggle.R;
 import com.gaggle.snoretrain.gaggle.adapters.AttendingEventRVAdapter;
 import com.gaggle.snoretrain.gaggle.models.PartyModel;
+import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
