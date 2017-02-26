@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/area_events"
+            android:title="@string/area_events" />
+        <item
+            android:id="@+id/my_events"
+            android:title="@string/my_events" />
+        <item
+            android:id="@+id/my_groups"
+            android:title="@string/my_groups" />
+        <item
+            android:id="@+id/attending_events"
+            android:title="@string/attending_events" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="@string/invite_friends" />
+            <item
+                android:id="@+id/gaggle_stories"
+                android:title="@string/gaggle_stories" />
+        </menu>
+    </item>
+
+</menu>

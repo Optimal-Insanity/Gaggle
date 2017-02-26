@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:id="@+id/event_attending_layout">
+    <ImageView
+        android:id="@+id/party_photo"
+        android:layout_width="@dimen/icon_width"
+        android:layout_height="@dimen/icon_height"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="@dimen/activity_vertical_margin"/>
+    <TextView
+        android:id="@+id/party_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/party_photo"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/activity_vertical_margin" />
+    <TextView
+        android:id="@+id/party_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:layout_toRightOf="@+id/party_title"/>
+    <TextView
+        android:id="@+id/party_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/activity_vertical_margin"/>
+    <TextView
+        android:id="@+id/party_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/activity_bottom_margin"
+        android:layout_toRightOf="@+id/party_photo"
+        android:layout_below="@+id/party_title"/>
+    <TextView
+        android:id="@+id/num_attending"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_toRightOf="@+id/party_photo"
+        android:layout_below="@+id/party_description"/>
+    <View
+        android:id="@+id/line_space"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/darker_gray"/>
+</RelativeLayout>
