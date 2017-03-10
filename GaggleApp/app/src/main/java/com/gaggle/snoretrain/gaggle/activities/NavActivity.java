@@ -66,8 +66,8 @@ public class NavActivity extends AppCompatActivity
         partiesTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                groupsTab.setBackgroundColor(Color.TRANSPARENT);
-                partiesTab.setBackgroundColor(getColor(R.color.color_accent));
+                groupsTab.setColorFilter(Color.DKGRAY);
+                partiesTab.setColorFilter(getColor(R.color.color_primary));
                 setFragment(new PartyListFragment());
             }
         });
@@ -80,8 +80,8 @@ public class NavActivity extends AppCompatActivity
         groupsTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                partiesTab.setBackgroundColor(Color.TRANSPARENT);
-                groupsTab.setBackgroundColor(getColor(R.color.color_accent));
+                partiesTab.setColorFilter(Color.DKGRAY);
+                groupsTab.setColorFilter(getColor(R.color.color_primary));
                 setFragment(new GroupListFragment());
 
             }
@@ -135,12 +135,20 @@ public class NavActivity extends AppCompatActivity
         if (id == R.id.my_groups) {
             // Send user to group fragment
             setFragment(new GroupListFragment());
+            partiesTab.setColorFilter(Color.DKGRAY);
+            groupsTab.setColorFilter(getColor(R.color.color_primary));
         } else if (id == R.id.my_events) {
+            partiesTab.setColorFilter(Color.DKGRAY);
+            groupsTab.setColorFilter(Color.DKGRAY);
             setFragment(new MyEventListFragment());
         } else if (id == R.id.area_events) {
             // Send user to party fragment
             setFragment(new PartyListFragment());
+            groupsTab.setColorFilter(Color.DKGRAY);
+            partiesTab.setColorFilter(getColor(R.color.color_primary));
         } else if (id == R.id.attending_events) {
+            partiesTab.setColorFilter(Color.DKGRAY);
+            groupsTab.setColorFilter(Color.DKGRAY);
             setFragment(new AttendingEventListFragment());
         } else if (id == R.id.nav_share) {
 
