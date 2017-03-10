@@ -15,7 +15,6 @@
             android:id="@+id/party_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_black"
             android:layout_toRightOf="@+id/party_photo"
             android:textStyle="bold"
             android:layout_marginTop="@dimen/activity_vertical_margin" />
@@ -23,42 +22,58 @@
             android:id="@+id/party_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_black"
             android:layout_margin="@dimen/activity_vertical_margin"
             android:layout_toRightOf="@+id/party_title"/>
         <TextView
             android:id="@+id/party_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_black"
             android:layout_alignParentRight="true"
             android:layout_margin="@dimen/activity_vertical_margin"/>
         <TextView
             android:id="@+id/party_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_black"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_marginBottom="@dimen/activity_bottom_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_toRightOf="@+id/party_photo"
             android:layout_below="@+id/party_title"/>
-        <Button
-            android:id="@+id/apply_button"
+        <LinearLayout
+            android:id="@+id/response_button_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/party_description"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="@dimen/activity_bottom_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:text="@string/apply_button"/>
-        <Button
-            android:id="@+id/remove_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/remove"
-            android:layout_alignBaseline="@+id/apply_button"
-            android:layout_alignBottom="@+id/apply_button"
-            android:layout_toStartOf="@+id/apply_button" />
+            android:weightSum="3"
+            android:layout_below="@+id/party_description"
+            android:layout_toEndOf="@+id/party_photo"
+            android:orientation="horizontal">
+                <ImageButton
+                    android:id="@+id/apply_button"
+                    android:layout_width="@dimen/no_space"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginTop="@dimen/button_vertical_margin"
+                    android:layout_marginBottom="@dimen/button_vertical_margin"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_menu_send"/>
+                <ImageButton
+                    android:id="@+id/watch_button"
+                    android:layout_width="@dimen/no_space"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_menu_view"/>
+                <ImageButton
+                    android:id="@+id/remove_button"
+                    android:layout_width="@dimen/no_space"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginTop="@dimen/button_vertical_margin"
+                    android:layout_marginBottom="@dimen/button_vertical_margin"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_close"/>
+        </LinearLayout>
         <View
             android:id="@+id/line_space"
             android:layout_width="match_parent"

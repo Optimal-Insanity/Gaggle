@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,16 +25,13 @@ public class PartyViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.party_distance) TextView distanceTextView;
     @BindView(R.id.party_date) TextView dateTextView;
     @BindView(R.id.party_photo) ImageView partyPhoto;
-    @BindView(R.id.apply_button) Button applyButton;
-    @BindView(R.id.remove_button) Button removeButton;
-    private int NUM_LINES_MAX;
-    private int NUM_LINES;
+    @BindView(R.id.apply_button) ImageButton applyButton;
+    @BindView(R.id.remove_button) ImageButton removeButton;
+    @BindView(R.id.watch_button) ImageButton watchButton;
 
 
     public PartyViewHolder(View itemView) {
         super(itemView);
-        NUM_LINES = 2;
-        NUM_LINES_MAX = 5;
         //Define View variables for class based on party_layout description
         ButterKnife.bind(this, itemView);
     }
@@ -49,19 +47,11 @@ public class PartyViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void clicked() {
-        //expand if this view is a clicked view
-        //Set text trunctuation
-        descriptionTextView.setMaxLines(NUM_LINES_MAX);
-        applyButton.setVisibility(View.VISIBLE);
-        removeButton.setVisibility(View.VISIBLE);
+
     }
 
     public void notClicked() {
         //remove expansion if not clicked
-        descriptionTextView.setEllipsize(TextUtils.TruncateAt.END);
-        descriptionTextView.setMaxLines(NUM_LINES);
-        applyButton.setVisibility(View.GONE);
-        removeButton.setVisibility(View.GONE);
     }
 
 }

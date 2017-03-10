@@ -1,6 +1,7 @@
 package com.gaggle.snoretrain.gaggle.activities;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -15,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.gaggle.snoretrain.gaggle.R;
 import com.gaggle.snoretrain.gaggle.fragments.AttendingEventListFragment;
@@ -22,8 +24,16 @@ import com.gaggle.snoretrain.gaggle.fragments.GroupListFragment;
 import com.gaggle.snoretrain.gaggle.fragments.MyEventListFragment;
 import com.gaggle.snoretrain.gaggle.fragments.PartyListFragment;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class NavActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    @BindView(R.id.parties_tab) ImageView partiesTab;
+    @BindView(R.id.messages_tab) ImageView messagesTab;
+    @BindView(R.id.groups_tab) ImageView groupsTab;
+    @BindView(R.id.notification_tab) ImageView notificationsTab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +58,40 @@ public class NavActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
+        ButterKnife.bind(this);
         Fragment startFragment = new PartyListFragment();
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_nav, startFragment).commit();
+
+        partiesTab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                groupsTab.setBackgroundColor(Color.TRANSPARENT);
+                partiesTab.setBackgroundColor(getColor(R.color.color_accent));
+                setFragment(new PartyListFragment());
+            }
+        });
+        messagesTab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        groupsTab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                partiesTab.setBackgroundColor(Color.TRANSPARENT);
+                groupsTab.setBackgroundColor(getColor(R.color.color_accent));
+                setFragment(new GroupListFragment());
+
+            }
+        });
+        notificationsTab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     @Override
