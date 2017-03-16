@@ -9,55 +9,24 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.gaggle.snoretrain.gaggle.activities.NavActivity"
     tools:showIn="@layout/app_bar_nav">
-    <LinearLayout
+
+    <android.support.design.widget.TabLayout
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="4"
-        android:orientation="horizontal">
-        <ImageView
-            android:id="@+id/parties_tab"
-            android:layout_width="@dimen/no_space"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginTop="@dimen/button_vertical_margin"
-            android:layout_marginBottom="@dimen/button_vertical_margin"
-            android:src="@drawable/ic_menu_manage"/>
-        <ImageView
-            android:id="@+id/messages_tab"
-            android:layout_width="@dimen/no_space"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginTop="@dimen/button_vertical_margin"
-            android:layout_marginBottom="@dimen/button_vertical_margin"
-            android:src="@drawable/ic_menu_manage" />
-        <ImageView
-            android:id="@+id/groups_tab"
-            android:layout_width="@dimen/no_space"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginTop="@dimen/button_vertical_margin"
-            android:layout_marginBottom="@dimen/button_vertical_margin"
-            android:src="@drawable/ic_menu_manage" />
-        <ImageView
-            android:id="@+id/notification_tab"
-            android:layout_width="@dimen/no_space"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginTop="@dimen/button_vertical_margin"
-            android:layout_marginBottom="@dimen/button_vertical_margin"
-            android:src="@drawable/ic_menu_manage" />
-    </LinearLayout>
-    <View
-        android:id="@+id/tab_shadow"
+        android:elevation="10dp"
+        android:background="@color/white"
+        app:tabIndicatorColor="@color/color_primary" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_below="@+id/tabs"
-        android:background="@android:color/darker_gray"/>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tabs"/>
     <FrameLayout
         android:id="@+id/fragment_nav"
         android:orientation="vertical"
-        android:layout_below="@+id/tab_shadow"
+        android:layout_below="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

@@ -1,14 +1,21 @@
 package com.gaggle.snoretrain.gaggle.activities;
 
 
+import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -24,16 +31,19 @@ import com.gaggle.snoretrain.gaggle.fragments.GroupListFragment;
 import com.gaggle.snoretrain.gaggle.fragments.MyEventListFragment;
 import com.gaggle.snoretrain.gaggle.fragments.PartyListFragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class NavActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    @BindView(R.id.parties_tab) ImageView partiesTab;
-    @BindView(R.id.messages_tab) ImageView messagesTab;
-    @BindView(R.id.groups_tab) ImageView groupsTab;
-    @BindView(R.id.notification_tab) ImageView notificationsTab;
+    @BindView(R.id.tabs)
+    TabLayout navTabs;
+    @BindView(R.id.view_pager)
+    ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,39 +69,43 @@ public class NavActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         ButterKnife.bind(this);
-        Fragment startFragment = new PartyListFragment();
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_nav, startFragment).commit();
 
-        partiesTab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                groupsTab.setColorFilter(Color.DKGRAY);
-                partiesTab.setColorFilter(getColor(R.color.color_primary));
-                setFragment(new PartyListFragment());
-            }
-        });
-        messagesTab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        setViewPager(viewPager);
+        navTabs.setupWithViewPager(viewPager);
 
-            }
-        });
-        groupsTab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                partiesTab.setColorFilter(Color.DKGRAY);
-                groupsTab.setColorFilter(getColor(R.color.color_primary));
-                setFragment(new GroupListFragment());
+        navTabs.getTabAt(0).setIcon(R.drawable.ic_whatshot_black_24dp);
+        navTabs.getTabAt(1).setIcon(R.drawable.ic_group_black_24dp);
+        navTabs.getTabAt(2).setIcon(R.drawable.ic_chat_bubble_black_24dp);
+        navTabs.getTabAt(3).setIcon(R.drawable.ic_public_black_24dp);
 
-            }
-        });
-        notificationsTab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        navTabs.getTabAt(0).getIcon().setColorFilter(getResources().getColor(R.color.color_primary),
+                PorterDuff.Mode.SRC_IN);
 
-            }
-        });
+        navTabs.setOnTabSelectedListener(
+                new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        super.onTabSelected(tab);
+                        tab.getIcon().setColorFilter(
+                                getResources().getColor(R.color.color_primary),
+                                PorterDuff.Mode.SRC_IN);
+                    }
+
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+                        super.onTabUnselected(tab);
+                        tab.getIcon().setColorFilter(
+                                Color.DKGRAY, PorterDuff.Mode.SRC_IN);
+                    }
+
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+                        super.onTabReselected(tab);
+                    }
+                }
+        );
+
     }
 
     @Override
@@ -135,20 +149,12 @@ public class NavActivity extends AppCompatActivity
         if (id == R.id.my_groups) {
             // Send user to group fragment
             setFragment(new GroupListFragment());
-            partiesTab.setColorFilter(Color.DKGRAY);
-            groupsTab.setColorFilter(getColor(R.color.color_primary));
         } else if (id == R.id.my_events) {
-            partiesTab.setColorFilter(Color.DKGRAY);
-            groupsTab.setColorFilter(Color.DKGRAY);
             setFragment(new MyEventListFragment());
         } else if (id == R.id.area_events) {
             // Send user to party fragment
             setFragment(new PartyListFragment());
-            groupsTab.setColorFilter(Color.DKGRAY);
-            partiesTab.setColorFilter(getColor(R.color.color_primary));
         } else if (id == R.id.attending_events) {
-            partiesTab.setColorFilter(Color.DKGRAY);
-            groupsTab.setColorFilter(Color.DKGRAY);
             setFragment(new AttendingEventListFragment());
         } else if (id == R.id.nav_share) {
 
@@ -159,6 +165,39 @@ public class NavActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void setViewPager(ViewPager vp){
+        Adapter viewPagerAdapter = new Adapter(getSupportFragmentManager());
+        viewPagerAdapter.addFragment(new PartyListFragment(), getString(R.string.party_tab_title));
+        viewPagerAdapter.addFragment(new GroupListFragment(), getString(R.string.group_tab_title));
+        viewPagerAdapter.addFragment(new PartyListFragment(), getString(R.string.message_tab_title));
+        viewPagerAdapter.addFragment(new GroupListFragment(), getString(R.string.notification_tab_title));
+        vp.setAdapter(viewPagerAdapter);
+    }
+    class Adapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragments = new ArrayList<>();
+        private final List<String> mFragmentTitles = new ArrayList<>();
+
+        public Adapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragments.add(fragment);
+            mFragmentTitles.add(title);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragments.size();
+        }
+
     }
 
     public void setFragment(Fragment frag){
