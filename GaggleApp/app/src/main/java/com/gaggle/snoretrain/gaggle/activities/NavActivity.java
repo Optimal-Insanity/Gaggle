@@ -1,7 +1,7 @@
 package com.gaggle.snoretrain.gaggle.activities;
 
 
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -13,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -23,13 +22,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.gaggle.snoretrain.gaggle.R;
 import com.gaggle.snoretrain.gaggle.fragments.AttendingEventListFragment;
+import com.gaggle.snoretrain.gaggle.fragments.EventListFragment;
 import com.gaggle.snoretrain.gaggle.fragments.GroupListFragment;
 import com.gaggle.snoretrain.gaggle.fragments.MyEventListFragment;
-import com.gaggle.snoretrain.gaggle.fragments.PartyListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +58,8 @@ public class NavActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
-
+        Intent intent = getIntent();
+        String uNameString = intent.getExtras().getString("USER_NAME");
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -67,9 +67,11 @@ public class NavActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View hView = navigationView.getHeaderView(0);
+        TextView textView = (TextView) hView.findViewById(R.id.user_text_view);
         navigationView.setNavigationItemSelectedListener(this);
         ButterKnife.bind(this);
-
+        textView.setText(uNameString);
         setViewPager(viewPager);
         navTabs.setupWithViewPager(viewPager);
 
@@ -88,7 +90,7 @@ public class NavActivity extends AppCompatActivity
                     public void onTabSelected(TabLayout.Tab tab) {
                         super.onTabSelected(tab);
                         tab.getIcon().setColorFilter(
-                                getResources().getColor(R.color.color_primary),
+                                getResources().getColor(R.color.color_primary_dark),
                                 PorterDuff.Mode.SRC_IN);
                     }
 
@@ -153,7 +155,7 @@ public class NavActivity extends AppCompatActivity
             setFragment(new MyEventListFragment());
         } else if (id == R.id.area_events) {
             // Send user to party fragment
-            setFragment(new PartyListFragment());
+            setFragment(new EventListFragment());
         } else if (id == R.id.attending_events) {
             setFragment(new AttendingEventListFragment());
         } else if (id == R.id.nav_share) {
@@ -169,9 +171,9 @@ public class NavActivity extends AppCompatActivity
 
     private void setViewPager(ViewPager vp){
         Adapter viewPagerAdapter = new Adapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragment(new PartyListFragment(), getString(R.string.party_tab_title));
+        viewPagerAdapter.addFragment(new EventListFragment(), getString(R.string.party_tab_title));
         viewPagerAdapter.addFragment(new GroupListFragment(), getString(R.string.group_tab_title));
-        viewPagerAdapter.addFragment(new PartyListFragment(), getString(R.string.message_tab_title));
+        viewPagerAdapter.addFragment(new EventListFragment(), getString(R.string.message_tab_title));
         viewPagerAdapter.addFragment(new GroupListFragment(), getString(R.string.notification_tab_title));
         vp.setAdapter(viewPagerAdapter);
     }

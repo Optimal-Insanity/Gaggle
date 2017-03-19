@@ -6,8 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.gaggle.snoretrain.gaggle.R;
-import com.gaggle.snoretrain.gaggle.holders.PartyViewHolder;
-import com.gaggle.snoretrain.gaggle.models.PartyModel;
+import com.gaggle.snoretrain.gaggle.models.EventListModel;
+import com.gaggle.snoretrain.gaggle.viewholders.EventViewHolder;
+import com.gaggle.snoretrain.gaggle.models.EventModel;
 
 import java.util.List;
 
@@ -15,29 +16,29 @@ import java.util.List;
  * Created by Snore Train on 2/19/2017.
  */
 
-public class PartyRVAdapter extends RecyclerView.Adapter<PartyViewHolder> {
+public class EventRVAdapter extends RecyclerView.Adapter<EventViewHolder> {
 
-    private List<PartyModel> parties;
+    private EventListModel parties;
     private int expandedPosition;
 
-    public PartyRVAdapter(List<PartyModel> newDataSet){
+    public EventRVAdapter(EventListModel newDataSet){
         expandedPosition = -1;
         parties = newDataSet;
     }
 
     @Override
-    public PartyViewHolder onCreateViewHolder(ViewGroup parent,
+    public EventViewHolder onCreateViewHolder(ViewGroup parent,
                                               int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.party_layout, parent, false);
 
-        return new PartyViewHolder(v);
+        return new EventViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(final PartyViewHolder holder, final int position) {
+    public void onBindViewHolder(final EventViewHolder holder, final int position) {
 
-        final PartyModel party = parties.get(position);
+        final EventModel party = parties.getEvent(position);
         holder.bind(party);
 
         final boolean isExpanded = position == expandedPosition;

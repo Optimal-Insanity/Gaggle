@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.gaggle.snoretrain.gaggle.R;
-import com.gaggle.snoretrain.gaggle.holders.GroupViewHolder;
+import com.gaggle.snoretrain.gaggle.viewholders.GroupViewHolder;
 import com.gaggle.snoretrain.gaggle.models.GroupModel;
 
 import java.util.List;

@@ -10,8 +10,12 @@ import android.view.ViewGroup;
 
 import com.gaggle.snoretrain.gaggle.R;
 import com.gaggle.snoretrain.gaggle.adapters.AttendingEventRVAdapter;
+import com.gaggle.snoretrain.gaggle.adapters.EventRVAdapter;
+import com.gaggle.snoretrain.gaggle.listener.IEventCallbackListener;
 import com.gaggle.snoretrain.gaggle.models.EventListModel;
 import com.gaggle.snoretrain.gaggle.models.EventModel;
+import com.gaggle.snoretrain.gaggle.services.GetEventTask;
+import com.gaggle.snoretrain.gaggle.utils.GaggleApi;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -25,16 +29,21 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by Snore Train on 2/23/2017.
+ * Created by Snore Train on 2/22/2017.
  */
 
-public class AttendingEventListFragment extends Fragment {
+public class EventListFragment extends Fragment {
     @BindView(R.id.fragment_recycler_view)
-    RecyclerView partyRecycler;
+    RecyclerView eventRecycler;
+    private EventRVAdapter eventRVAdapter;
+    private LinearLayoutManager eventAttendingRVLayoutManager;
 
-    public AttendingEventListFragment(){
+
+    public EventListFragment(){
 
     }
 
@@ -53,35 +62,21 @@ public class AttendingEventListFragment extends Fragment {
         ButterKnife.bind(this, root);
 
         final Gson gson = new Gson();
-        OkHttpClient client = new OkHttpClient();
-        final Request request = new Request.Builder()
-                .url("https://gaggleapi.herokuapp.com/parties/")
-                .build();
-        client.newCall(request).enqueue(new Callback() {
+
+        IEventCallbackListener eventCallbackListener = new IEventCallbackListener() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
+            public void onSearchCallBack(EventListModel eventModels) {
+                eventRVAdapter = new EventRVAdapter(eventModels);
+                eventRecycler.setAdapter(eventRVAdapter);
+                //get the llm for this activity and make recycler use it
+                eventAttendingRVLayoutManager = new LinearLayoutManager(getActivity());
+                eventRecycler.setLayoutManager(eventAttendingRVLayoutManager);
             }
+        };
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()){
-                    throw new IOException("Unexpected Code " + response);
-                } else {
-                    EventListModel partyData = gson.fromJson(response.body().charStream(), EventListModel.class);
-                    //Create new adapter of EventRVAdapter type and set RV adapter to it
-                    AttendingEventRVAdapter eventAttendingRVAdapter = new AttendingEventRVAdapter(partyData);
-                    partyRecycler.setAdapter(eventAttendingRVAdapter);
-
-                    //get the llm for this activity and make recycler use it
-                    LinearLayoutManager eventAttendingRVLayoutManager = new LinearLayoutManager(getActivity());
-                    partyRecycler.setLayoutManager(eventAttendingRVLayoutManager);
-                }
-            }
-        });
-
+        GetEventTask getEventTask = new GetEventTask(eventCallbackListener, getActivity());
+        getEventTask.execute();
 
         return root;
     }
-
 }

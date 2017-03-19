@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.gaggle.snoretrain.gaggle.R;
-import com.gaggle.snoretrain.gaggle.holders.AttendingEventViewHolder;
-import com.gaggle.snoretrain.gaggle.models.PartyModel;
+import com.gaggle.snoretrain.gaggle.viewholders.AttendingEventViewHolder;
+import com.gaggle.snoretrain.gaggle.models.EventModel;
 
 import java.util.List;
 
@@ -16,9 +16,9 @@ import java.util.List;
  */
 
 public class AttendingEventRVAdapter extends RecyclerView.Adapter<AttendingEventViewHolder> {
-    private List<PartyModel> parties;
+    private List<EventModel> parties;
 
-    public AttendingEventRVAdapter(List<PartyModel> newDataSet){
+    public AttendingEventRVAdapter(List<EventModel> newDataSet){
         parties = newDataSet;
     }
 
@@ -34,7 +34,7 @@ public class AttendingEventRVAdapter extends RecyclerView.Adapter<AttendingEvent
     @Override
     public void onBindViewHolder(final AttendingEventViewHolder holder, final int position){
 
-        final PartyModel party = parties.get(position);
+        final EventModel party = parties.get(position);
         holder.bind(party);
     }
 

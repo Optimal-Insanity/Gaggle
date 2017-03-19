@@ -1,4 +1,4 @@
-package com.gaggle.snoretrain.gaggle.holders;
+package com.gaggle.snoretrain.gaggle.viewholders;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

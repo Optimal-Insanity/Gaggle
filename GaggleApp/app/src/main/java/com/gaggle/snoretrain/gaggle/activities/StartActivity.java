@@ -3,8 +3,11 @@ package com.gaggle.snoretrain.gaggle.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -29,11 +32,24 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gaggle.snoretrain.gaggle.R;
+import com.gaggle.snoretrain.gaggle.models.UserModel;
+import com.google.gson.Gson;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -45,6 +61,7 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
     /**
      * Id to identity READ_CONTACTS permission request.
      */
+    private UserModel user;
     private static final int REQUEST_READ_CONTACTS = 0;
 
     /**
@@ -195,7 +212,8 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.contains("@");
+        //return email.contains("@");
+        return true;
     }
 
     private boolean isPasswordValid(String password) {
@@ -318,14 +336,29 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
                 return false;
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
+            //HttpUrl.Builder urlBuilder = HttpUrl.parse("https://gaggleapi.herokuapp.com/authenticate").newBuilder();
+            //urlBuilder.addQueryParameter("user_name", mEmail);
+            //urlBuilder.addQueryParameter("password", mPassword);
 
+            //String url = urlBuilder.build().toString();
+
+            OkHttpClient client = new OkHttpClient();
+
+            Request request = new Request.Builder()
+                    .url("https://gaggleapi.herokuapp.com/authenticate?user_name="
+                            + mEmail + "&password=" + mPassword).build();
+
+            final Gson gson = new Gson();
+            Response response = null;
+            try {
+                response = client.newCall(request).execute();
+                user = gson.fromJson(response.body().charStream(), UserModel.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (user.getUserName() == null) {
+                return false;
+            }
             // TODO: register the new account here.
             return true;
         }
@@ -336,8 +369,9 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
-
+                user.getUserName();
                 Intent intent = new Intent(StartActivity.this, NavActivity.class);
+                intent.putExtra("USER_NAME", user.getUserName());
                 startActivity(intent);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

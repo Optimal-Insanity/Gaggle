@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.gaggle.snoretrain.gaggle.R;
-import com.gaggle.snoretrain.gaggle.holders.MyEventViewHolder;
-import com.gaggle.snoretrain.gaggle.models.PartyModel;
+import com.gaggle.snoretrain.gaggle.viewholders.MyEventViewHolder;
+import com.gaggle.snoretrain.gaggle.models.EventModel;
 
 import java.util.List;
 
@@ -17,9 +17,9 @@ import java.util.List;
 
 public class MyEventRVAdapter extends RecyclerView.Adapter<MyEventViewHolder> {
 
-    private List<PartyModel> myEvents;
+    private List<EventModel> myEvents;
 
-    public MyEventRVAdapter(List<PartyModel> newDataSet){
+    public MyEventRVAdapter(List<EventModel> newDataSet){
         myEvents = newDataSet;
     }
 
@@ -35,7 +35,7 @@ public class MyEventRVAdapter extends RecyclerView.Adapter<MyEventViewHolder> {
     @Override
     public void onBindViewHolder(final MyEventViewHolder holder, final int position) {
 
-        final PartyModel party = myEvents.get(position);
+        final EventModel party = myEvents.get(position);
         holder.bind(party);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

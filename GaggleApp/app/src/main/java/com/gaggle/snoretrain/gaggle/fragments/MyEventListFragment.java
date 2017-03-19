@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.gaggle.snoretrain.gaggle.R;
 import com.gaggle.snoretrain.gaggle.adapters.MyEventRVAdapter;
-import com.gaggle.snoretrain.gaggle.models.PartyModel;
+import com.gaggle.snoretrain.gaggle.models.EventModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,17 +45,12 @@ public class MyEventListFragment extends Fragment {
         ButterKnife.bind(this, root);
 
         //create faux data for my events, later to replace with async task at top level
-        List<PartyModel> myEventData = new ArrayList<>();
+        List<EventModel> myEventData = new ArrayList<>();
 
         for (int i = 0; i < 14; i++)
             if((i % 2) == 0)
-            myEventData.add(new PartyModel("Fun with Friends", "A fun time with friends! " +
-                    "We'll be getting together to celebrate some stuff. " +
-                    "We'll Probably eat some food. Don't be a bitch show up",
-                    "2.6 miles", "2/25/2017", R.drawable.its_party_time));
-            else myEventData.add(new PartyModel("Super Rager.", "Trying to get trashed and " +
-                "break some shit, might also shave Mike's head. Who knows..",
-                "3.4 miles", "3/4/2017", R.drawable.its_party_time_2));
+            myEventData.add(new EventModel());
+            else myEventData.add(new EventModel());
 
         //Create new MyEventRVAdapter to set for this recyclerview
         MyEventRVAdapter myEventRVAdapter = new MyEventRVAdapter(myEventData);
