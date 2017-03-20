@@ -19,7 +19,8 @@ public class EventModel {
     private String partyType;
     @SerializedName("event_time")
     private String eventTime;
-    private String distance;
+    @SerializedName("distance")
+    private double distance;
     @SerializedName("paid")
     private int paid;
     @SerializedName("verified")
@@ -34,7 +35,7 @@ public class EventModel {
     private int maxAttending;
 
     public EventModel(){
-        distance = "3.1";
+        distance = 3.1;
     }
 
     public String getTitle(){
@@ -44,7 +45,7 @@ public class EventModel {
         return description;
     }
     public String getDistance(){
-        return distance;
+        return String.format("%.1f", distance) + " mi";
     }
     public String getDate() {
         return date;

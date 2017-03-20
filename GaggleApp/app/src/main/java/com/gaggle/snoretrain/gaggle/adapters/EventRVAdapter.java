@@ -18,12 +18,12 @@ import java.util.List;
 
 public class EventRVAdapter extends RecyclerView.Adapter<EventViewHolder> {
 
-    private EventListModel parties;
+    private EventListModel eventModels;
     private int expandedPosition;
 
     public EventRVAdapter(EventListModel newDataSet){
         expandedPosition = -1;
-        parties = newDataSet;
+        eventModels = newDataSet;
     }
 
     @Override
@@ -37,8 +37,10 @@ public class EventRVAdapter extends RecyclerView.Adapter<EventViewHolder> {
 
     @Override
     public void onBindViewHolder(final EventViewHolder holder, final int position) {
-
-        final EventModel party = parties.getEvent(position);
+        if (eventModels == null){
+            return;
+        }
+        final EventModel party = eventModels.getEvent(position);
         holder.bind(party);
 
         final boolean isExpanded = position == expandedPosition;
@@ -64,8 +66,8 @@ public class EventRVAdapter extends RecyclerView.Adapter<EventViewHolder> {
 
     @Override
     public int getItemCount(){
-        if (parties == null) return 0;
-        return parties.size();
+        if (eventModels == null) return 0;
+        return eventModels.size();
     }
 
 }
