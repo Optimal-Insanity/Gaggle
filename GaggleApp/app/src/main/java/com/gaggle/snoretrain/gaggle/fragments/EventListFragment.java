@@ -1,13 +1,13 @@
 package com.gaggle.snoretrain.gaggle.fragments;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
+import android.content.IntentSender;
+import android.icu.text.DateFormat;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,12 +23,20 @@ import com.gaggle.snoretrain.gaggle.services.GetEventTask;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static android.content.Context.LOCATION_SERVICE;
 
 
 /**
@@ -36,19 +44,21 @@ import static android.content.Context.LOCATION_SERVICE;
  */
 
 public class EventListFragment extends Fragment implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ActivityCompat.OnRequestPermissionsResultCallback{
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
     @BindView(R.id.fragment_recycler_view)
     RecyclerView eventRecycler;
     private EventRVAdapter eventRVAdapter;
     private LinearLayoutManager eventAttendingRVLayoutManager;
     private Location mLastLocation;
-    public LocationManager mLocationManager;
+    private LocationRequest mLocationRequest;
     private GetEventTask getEventTask;
     private IEventCallbackListener eventCallbackListener;
     private double latitude;
     private double longitude;
+    private GoogleApiClient mGoogleApiClient;
     int LOCATION_REFRESH_TIME;
     int LOCATION_REFRESH_DISTANCE;
+
 
     public EventListFragment() {
 
@@ -57,6 +67,9 @@ public class EventListFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LOCATION_REFRESH_TIME = 10000;
+        LOCATION_REFRESH_DISTANCE = 5;
+
     }
 
     @Override
@@ -67,20 +80,14 @@ public class EventListFragment extends Fragment implements
 
         //bind views that need binding
         ButterKnife.bind(this, root);
-        LOCATION_REFRESH_TIME = 10000;
-        LOCATION_REFRESH_DISTANCE = 5;
-        mLocationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
-                    LOCATION_REFRESH_DISTANCE, mLocationListener);
-        } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
+        if (mGoogleApiClient == null){
+            mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
         }
-        mLastLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-        latitude = mLastLocation.getLatitude();
-        longitude = mLastLocation.getLongitude();
+        mGoogleApiClient.connect();
         eventCallbackListener = new IEventCallbackListener() {
             @Override
             public void onSearchCallBack(EventListModel eventModels) {
@@ -91,40 +98,40 @@ public class EventListFragment extends Fragment implements
                 eventRecycler.setLayoutManager(eventAttendingRVLayoutManager);
             }
         };
-        getEventTask = new GetEventTask(eventCallbackListener, getActivity(), latitude, longitude);
-        getEventTask.execute();
 
         return root;
     }
-
-    private final LocationListener mLocationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(Location location) {
-
-            mLastLocation = location;
-            getEventTask = new GetEventTask(eventCallbackListener,
-                    getActivity(), location.getLatitude(), location.getLongitude());
-
+    @Override
+    public void onPause(){
+        stopLocationUpdates();
+        super.onPause();
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        if (mGoogleApiClient.isConnected()){
+            startLocationUpdates();
         }
+    }
+    @Override
+    public void onStop(){
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
 
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-
-        }
-    };
     @Override
     public void onConnected(Bundle bundle){
+        createLocationRequest();
+        startLocationUpdates();
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+            mGoogleApiClient, mLocationRequest, this);
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (mLastLocation != null){
+            latitude = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
 
+        }
     }
     @Override
     public void onConnectionSuspended(int i){
@@ -134,18 +141,73 @@ public class EventListFragment extends Fragment implements
     public void onConnectionFailed(ConnectionResult connectionResult){
 
     }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case 200: {
-                if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                            || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
-                                LOCATION_REFRESH_DISTANCE, mLocationListener);
-                    }
+    protected void stopLocationUpdates(){
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
+    }
+    protected void startLocationUpdates(){
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, mLocationRequest, this);
+
+    }
+    protected void createLocationRequest(){
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(50);
+        mLocationRequest.setFastestInterval(10);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest);
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient,
+                        builder.build());
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(LocationSettingsResult resultCallBack) {
+                final Status status = resultCallBack.getStatus();
+                final LocationSettingsStates states = resultCallBack.getLocationSettingsStates();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        // All location settings are satisfied. The client can
+                        // initialize location requests here.
+                        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                                mGoogleApiClient);
+                        if (mLastLocation != null){
+                            latitude = mLastLocation.getLatitude();
+                            longitude = mLastLocation.getLongitude();
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        // Location settings are not satisfied, but this can be fixed
+                        // by showing the user a dialog.
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(
+                                    getActivity(),
+                                    0x1);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        // Location settings are not satisfied. However, we have no way
+                        // to fix the settings so we won't show the dialog.
+
+                        break;
                 }
             }
-        }
+        });
     }
+    private void updateUI(){
+        getEventTask = new GetEventTask(eventCallbackListener, getActivity(), latitude, longitude);
+        getEventTask.execute();
+    }
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        latitude = mLastLocation.getLatitude();
+        longitude = mLastLocation.getLongitude();
+        updateUI();
+    }
+
 }

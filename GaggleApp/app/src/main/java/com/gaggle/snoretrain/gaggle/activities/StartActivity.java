@@ -356,7 +356,7 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (user.getUserName() == null) {
+            if (user == null) {
                 return false;
             }
             // TODO: register the new account here.
@@ -368,8 +368,7 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
 
-            if (success) {
-                user.getUserName();
+            if (success && user.getUserName() != null) {
                 Intent intent = new Intent(StartActivity.this, NavActivity.class);
                 intent.putExtra("USER_NAME", user.getUserName());
                 startActivity(intent);

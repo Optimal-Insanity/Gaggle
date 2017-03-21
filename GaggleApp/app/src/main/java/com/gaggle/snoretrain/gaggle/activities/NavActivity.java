@@ -60,6 +60,10 @@ public class NavActivity extends AppCompatActivity
         });
         Intent intent = getIntent();
         String uNameString = intent.getExtras().getString("USER_NAME");
+        if (uNameString == null){
+            intent = new Intent(NavActivity.this, StartActivity.class);
+            startActivity(intent);
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
