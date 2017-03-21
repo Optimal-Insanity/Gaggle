@@ -1,6 +1,7 @@
 package com.gaggle.snoretrain.gaggle.fragments;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.icu.text.DateFormat;
@@ -39,6 +40,8 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -221,6 +224,19 @@ public class EventListFragment extends Fragment implements
                 if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         startLocationUpdates();
 
+                }
+            }
+        }
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if (requestCode == 0x1){
+            if (resultCode == RESULT_OK){
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
+                }else {
+                    startLocationUpdates();
                 }
             }
         }
