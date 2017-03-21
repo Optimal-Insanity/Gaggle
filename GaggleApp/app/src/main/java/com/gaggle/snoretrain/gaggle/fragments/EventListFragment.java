@@ -1,6 +1,8 @@
 package com.gaggle.snoretrain.gaggle.fragments;
 
+import android.Manifest;
 import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.icu.text.DateFormat;
 import android.location.Location;
 import android.location.LocationManager;
@@ -88,6 +90,7 @@ public class EventListFragment extends Fragment implements
                     .build();
         }
         mGoogleApiClient.connect();
+        createLocationRequest();
         eventCallbackListener = new IEventCallbackListener() {
             @Override
             public void onSearchCallBack(EventListModel eventModels) {
@@ -121,10 +124,7 @@ public class EventListFragment extends Fragment implements
 
     @Override
     public void onConnected(Bundle bundle){
-        createLocationRequest();
-        startLocationUpdates();
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-            mGoogleApiClient, mLocationRequest, this);
+
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null){
@@ -146,8 +146,12 @@ public class EventListFragment extends Fragment implements
                 mGoogleApiClient, this);
     }
     protected void startLocationUpdates(){
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, mLocationRequest, this);
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, this);
+        }
+
 
     }
     protected void createLocationRequest(){
@@ -169,12 +173,13 @@ public class EventListFragment extends Fragment implements
                     case LocationSettingsStatusCodes.SUCCESS:
                         // All location settings are satisfied. The client can
                         // initialize location requests here.
-                        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                                mGoogleApiClient);
-                        if (mLastLocation != null){
-                            latitude = mLastLocation.getLatitude();
-                            longitude = mLastLocation.getLongitude();
+                        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
+                        }else {
+                            startLocationUpdates();
                         }
+
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                         // Location settings are not satisfied, but this can be fixed
@@ -208,6 +213,17 @@ public class EventListFragment extends Fragment implements
         latitude = mLastLocation.getLatitude();
         longitude = mLastLocation.getLongitude();
         updateUI();
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 200: {
+                if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        startLocationUpdates();
+
+                }
+            }
+        }
     }
 
 }
