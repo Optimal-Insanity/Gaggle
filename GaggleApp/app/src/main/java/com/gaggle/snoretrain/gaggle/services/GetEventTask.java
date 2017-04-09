@@ -23,13 +23,12 @@ import okhttp3.Response;
 public class GetEventTask extends AsyncTask<String, String, EventListModel> {
 
     private IEventCallbackListener eventCallbackListener;
-    private Context currContext;
     private double longitude;
     private double latitude;
 
-    public GetEventTask(final IEventCallbackListener ecl, Context someContext, double lat, double lon){
+    public GetEventTask(final IEventCallbackListener ecl, double lat, double lon){
         eventCallbackListener = ecl;
-        currContext = someContext;
+
         longitude = lon;
         latitude = lat;
     }
@@ -39,7 +38,7 @@ public class GetEventTask extends AsyncTask<String, String, EventListModel> {
         EventListModel eventModels = new EventListModel();
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("https://gaggleapi.herokuapp.com/parties/params?" +
+                .url("http://45.63.94.22/parties/params?" +
                 "longitude=" + Double.toString(longitude) +
                 "&latitude=" + Double.toString(latitude) +
                 "&radius=" + Integer.toString(100))

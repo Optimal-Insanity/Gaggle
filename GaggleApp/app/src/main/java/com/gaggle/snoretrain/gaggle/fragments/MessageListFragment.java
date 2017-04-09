@@ -9,33 +9,34 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.gaggle.snoretrain.gaggle.R;
-import com.gaggle.snoretrain.gaggle.adapters.GroupRVAdapter;
-import com.gaggle.snoretrain.gaggle.listener.IGroupCallbackListener;
-import com.gaggle.snoretrain.gaggle.models.GroupListModel;
-import com.gaggle.snoretrain.gaggle.models.GroupModel;
+import com.gaggle.snoretrain.gaggle.adapters.MessageRVAdapter;
+import com.gaggle.snoretrain.gaggle.listener.IExpandCallbackListener;
+import com.gaggle.snoretrain.gaggle.listener.IMessageCallbackListener;
+import com.gaggle.snoretrain.gaggle.models.MessageResponseModel;
 import com.gaggle.snoretrain.gaggle.models.UserModel;
-import com.gaggle.snoretrain.gaggle.services.GetGroupTask;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.gaggle.snoretrain.gaggle.services.GetMessagesTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by Snore Train on 2/22/2017.
+ * Created by Snore Train on 4/8/2017.
  */
 
-public class GroupListFragment extends Fragment {
+public class MessageListFragment extends Fragment {
     @BindView(R.id.fragment_recycler_view)
-    RecyclerView groupRecycler;
+    RecyclerView threadRecycler;
     private UserModel user;
-    public GroupListFragment(){
+    private IExpandCallbackListener expandCallbackListener;
+    public MessageListFragment(){
 
     }
     public void setUser(UserModel u){
 
         user = u;
+    }
+    public void setExpandCallbackListener(IExpandCallbackListener ecl){
+        expandCallbackListener = ecl;
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,20 +52,21 @@ public class GroupListFragment extends Fragment {
         //bind list of views that need binding
         ButterKnife.bind(this, root);
 
-        IGroupCallbackListener groupCallbackListener = new IGroupCallbackListener() {
+        IMessageCallbackListener messageCallbackListener = new IMessageCallbackListener() {
             @Override
-            public void onSearchCallback(GroupListModel groupModels) {
+            public void onSearchCallback(MessageResponseModel messages) {
                 //Create new adapter of GroupRVAdapter type and set the RV adapter to it
-                GroupRVAdapter groupRVAdapter = new GroupRVAdapter(groupModels);
-                groupRecycler.setAdapter(groupRVAdapter);
+                MessageRVAdapter messageRVAdapter = new MessageRVAdapter(messages);
+                messageRVAdapter.setExpandCallbackListener(expandCallbackListener);
+                threadRecycler.setAdapter(messageRVAdapter);
 
                 //get the layout manager for this activity and make RV use it
-                LinearLayoutManager groupRVLayoutManager = new LinearLayoutManager(getActivity());
-                groupRecycler.setLayoutManager(groupRVLayoutManager);
+                LinearLayoutManager messageRVLayoutManager = new LinearLayoutManager(getActivity());
+                threadRecycler.setLayoutManager(messageRVLayoutManager);
             }
         };
-        GetGroupTask getGroupTask = new GetGroupTask(groupCallbackListener, user.getUserId());
-        getGroupTask.execute();
+        GetMessagesTask getMessagesTask = new GetMessagesTask(messageCallbackListener, user.getUserId());
+        getMessagesTask.execute();
         return root;
     }
 }

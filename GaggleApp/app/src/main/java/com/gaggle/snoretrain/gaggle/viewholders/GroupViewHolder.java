@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.gaggle.snoretrain.gaggle.R;
 import com.gaggle.snoretrain.gaggle.models.GroupModel;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,6 +30,12 @@ public class GroupViewHolder extends RecyclerView.ViewHolder {
         public final void bind(final GroupModel group){
             //set view info for each group in list
             groupNameTextView.setText(group.getGroupName());
-            groupImageView.setImageResource(group.getPhotoID());
+            if (group.getPhotoUrl() != null){
+                Picasso.with(groupImageView.getContext())
+                        .load(group.getPhotoUrl())
+                        .into(groupImageView);
+            } else {
+                groupImageView.setImageResource(R.drawable.group_icon);
+            }
         }
 }

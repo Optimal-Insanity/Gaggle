@@ -10,8 +10,6 @@ import com.gaggle.snoretrain.gaggle.models.EventListModel;
 import com.gaggle.snoretrain.gaggle.viewholders.EventViewHolder;
 import com.gaggle.snoretrain.gaggle.models.EventModel;
 
-import java.util.List;
-
 /**
  * Created by Snore Train on 2/19/2017.
  */
@@ -30,7 +28,7 @@ public class EventRVAdapter extends RecyclerView.Adapter<EventViewHolder> {
     public EventViewHolder onCreateViewHolder(ViewGroup parent,
                                               int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.party_layout, parent, false);
+                .inflate(R.layout.event_layout, parent, false);
 
         return new EventViewHolder(v);
     }

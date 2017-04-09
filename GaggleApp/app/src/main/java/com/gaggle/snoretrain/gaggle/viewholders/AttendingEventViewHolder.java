@@ -28,7 +28,7 @@ public class AttendingEventViewHolder extends RecyclerView.ViewHolder {
     public AttendingEventViewHolder(View itemView) {
         super(itemView);
 
-        //Define View variables for class based on party_layout description
+        //Define View variables for class based on event_layout description
         ButterKnife.bind(this, itemView);
         //Set text trunctuation
         descriptionTextView.setEllipsize(TextUtils.TruncateAt.END);

@@ -28,7 +28,12 @@ import com.gaggle.snoretrain.gaggle.R;
 import com.gaggle.snoretrain.gaggle.fragments.AttendingEventListFragment;
 import com.gaggle.snoretrain.gaggle.fragments.EventListFragment;
 import com.gaggle.snoretrain.gaggle.fragments.GroupListFragment;
+import com.gaggle.snoretrain.gaggle.fragments.MessageListFragment;
 import com.gaggle.snoretrain.gaggle.fragments.MyEventListFragment;
+import com.gaggle.snoretrain.gaggle.listener.IExpandCallbackListener;
+import com.gaggle.snoretrain.gaggle.models.DataSet;
+import com.gaggle.snoretrain.gaggle.models.GroupModel;
+import com.gaggle.snoretrain.gaggle.models.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +48,12 @@ public class NavActivity extends AppCompatActivity
     TabLayout navTabs;
     @BindView(R.id.view_pager)
     ViewPager viewPager;
+    EventListFragment eventListFragment;
+    GroupListFragment groupListFragment;
+    MessageListFragment messageListFragment;
+    private final int EVENT_LIST_INDEX = 0;
+    private Adapter viewPagerAdapter;
+    private UserModel user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +70,25 @@ public class NavActivity extends AppCompatActivity
             }
         });
         Intent intent = getIntent();
-        String uNameString = intent.getExtras().getString("USER_NAME");
-        if (uNameString == null){
+        user = (UserModel)intent.getSerializableExtra("UserObj");
+        if (user.getUserName() == null || user.getUserName().equals("")){
             intent = new Intent(NavActivity.this, StartActivity.class);
             startActivity(intent);
         }
+        eventListFragment = new EventListFragment();
+        groupListFragment = new GroupListFragment();
+        messageListFragment = new MessageListFragment();
+        groupListFragment.setUser(user);
+        messageListFragment.setUser(user);
+        messageListFragment.setExpandCallbackListener(new IExpandCallbackListener() {
+            @Override
+            public void onTapCallback(DataSet expandedData) {
+                Intent displayMessages = new Intent(NavActivity.this, ConversationActivity.class);
+                displayMessages.putExtra("messages", expandedData);
+                startActivity(displayMessages);
+
+            }
+        });
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -75,13 +100,13 @@ public class NavActivity extends AppCompatActivity
         TextView textView = (TextView) hView.findViewById(R.id.user_text_view);
         navigationView.setNavigationItemSelectedListener(this);
         ButterKnife.bind(this);
-        textView.setText(uNameString);
+        textView.setText(user.getFname() + ' ' + user.getLname());
         setViewPager(viewPager);
         navTabs.setupWithViewPager(viewPager);
 
         navTabs.getTabAt(0).setIcon(R.drawable.ic_whatshot_black_24dp);
         navTabs.getTabAt(1).setIcon(R.drawable.ic_group_black_24dp);
-        navTabs.getTabAt(2).setIcon(R.drawable.ic_chat_bubble_black_24dp);
+        navTabs.getTabAt(2).setIcon(R.drawable.ic_forum_black_24dp);
         navTabs.getTabAt(3).setIcon(R.drawable.ic_public_black_24dp);
 
         navTabs.getTabAt(0).getIcon().setColorFilter(getResources().getColor(R.color.color_primary),
@@ -94,7 +119,7 @@ public class NavActivity extends AppCompatActivity
                     public void onTabSelected(TabLayout.Tab tab) {
                         super.onTabSelected(tab);
                         tab.getIcon().setColorFilter(
-                                getResources().getColor(R.color.color_primary_dark),
+                                getResources().getColor(R.color.color_primary),
                                 PorterDuff.Mode.SRC_IN);
                     }
 
@@ -174,11 +199,15 @@ public class NavActivity extends AppCompatActivity
     }
 
     private void setViewPager(ViewPager vp){
-        Adapter viewPagerAdapter = new Adapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragment(new EventListFragment(), getString(R.string.party_tab_title));
-        viewPagerAdapter.addFragment(new GroupListFragment(), getString(R.string.group_tab_title));
-        viewPagerAdapter.addFragment(new EventListFragment(), getString(R.string.message_tab_title));
-        viewPagerAdapter.addFragment(new GroupListFragment(), getString(R.string.notification_tab_title));
+        viewPagerAdapter = new Adapter(getSupportFragmentManager());
+
+        viewPagerAdapter.addFragment(eventListFragment, getString(R.string.party_tab_title));
+        viewPagerAdapter.addFragment(groupListFragment, getString(R.string.group_tab_title));
+        viewPagerAdapter.addFragment(messageListFragment, getString(R.string.message_tab_title));
+        groupListFragment = new GroupListFragment();
+        groupListFragment.setUser(user);
+        viewPagerAdapter.addFragment(groupListFragment, getString(R.string.notification_tab_title));
+
         vp.setAdapter(viewPagerAdapter);
     }
     class Adapter extends FragmentPagerAdapter {
@@ -205,11 +234,21 @@ public class NavActivity extends AppCompatActivity
         }
 
     }
+    public static void expandGroup(GroupModel group){
 
+    }
     public void setFragment(Fragment frag){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_nav, frag);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if (requestCode == EventListFragment.REQUEST_LOCATION_PERMISSION){
+            viewPagerAdapter
+                    .getItem(EVENT_LIST_INDEX)
+                    .onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

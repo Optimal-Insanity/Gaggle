@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.gaggle.snoretrain.gaggle.R;
+import com.gaggle.snoretrain.gaggle.activities.NavActivity;
+import com.gaggle.snoretrain.gaggle.models.GroupListModel;
 import com.gaggle.snoretrain.gaggle.viewholders.GroupViewHolder;
 import com.gaggle.snoretrain.gaggle.models.GroupModel;
 
@@ -19,8 +21,8 @@ public class GroupRVAdapter extends RecyclerView.Adapter<GroupViewHolder> {
 
     private List<GroupModel> groups;
 
-    public GroupRVAdapter(List<GroupModel> newDataSet){
-        groups = newDataSet;
+    public GroupRVAdapter(GroupListModel newDataSet){
+        groups = newDataSet.getGroups();
     }
 
     @Override
@@ -28,7 +30,6 @@ public class GroupRVAdapter extends RecyclerView.Adapter<GroupViewHolder> {
                                               int viewType){
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.group_layout, parent, false);
-
         return new GroupViewHolder(v);
     }
 
@@ -41,7 +42,7 @@ public class GroupRVAdapter extends RecyclerView.Adapter<GroupViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //start new activity in here
+                NavActivity.expandGroup(group);
             }
         });
     }

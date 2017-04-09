@@ -345,7 +345,7 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
             OkHttpClient client = new OkHttpClient();
 
             Request request = new Request.Builder()
-                    .url("https://gaggleapi.herokuapp.com/authenticate?user_name="
+                    .url("http://45.63.94.22/authenticate?user_name="
                             + mEmail + "&password=" + mPassword).build();
 
             final Gson gson = new Gson();
@@ -370,7 +370,7 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
 
             if (success && user.getUserName() != null) {
                 Intent intent = new Intent(StartActivity.this, NavActivity.class);
-                intent.putExtra("USER_NAME", user.getUserName());
+                intent.putExtra("UserObj", user);
                 startActivity(intent);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

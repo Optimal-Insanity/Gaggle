@@ -61,8 +61,9 @@ public class EventListFragment extends Fragment implements
     private double latitude;
     private double longitude;
     private GoogleApiClient mGoogleApiClient;
-    int LOCATION_REFRESH_TIME;
-    int LOCATION_REFRESH_DISTANCE;
+    public final int LOCATION_REFRESH_TIME = 10000;
+    public final int LOCATION_REFRESH_DISTANCE = 5;
+    public final static int REQUEST_LOCATION_PERMISSION = 0x1;
 
 
     public EventListFragment() {
@@ -72,8 +73,6 @@ public class EventListFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LOCATION_REFRESH_TIME = 10000;
-        LOCATION_REFRESH_DISTANCE = 5;
 
     }
 
@@ -109,7 +108,9 @@ public class EventListFragment extends Fragment implements
     }
     @Override
     public void onPause(){
-        stopLocationUpdates();
+        if (mGoogleApiClient.isConnected()) {
+            stopLocationUpdates();
+        }
         super.onPause();
     }
     @Override
@@ -127,7 +128,6 @@ public class EventListFragment extends Fragment implements
 
     @Override
     public void onConnected(Bundle bundle){
-
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null){
@@ -145,8 +145,9 @@ public class EventListFragment extends Fragment implements
 
     }
     protected void stopLocationUpdates(){
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient, this);
+            LocationServices.FusedLocationApi.removeLocationUpdates(
+                    mGoogleApiClient, this);
+
     }
     protected void startLocationUpdates(){
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -159,9 +160,10 @@ public class EventListFragment extends Fragment implements
     }
     protected void createLocationRequest(){
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(50);
-        mLocationRequest.setFastestInterval(10);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        mLocationRequest.setInterval(50000);
+        mLocationRequest.setFastestInterval(10000);
+        mLocationRequest.setSmallestDisplacement(200);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
                 .addLocationRequest(mLocationRequest);
         PendingResult<LocationSettingsResult> result =
@@ -178,11 +180,10 @@ public class EventListFragment extends Fragment implements
                         // initialize location requests here.
                         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                                 && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
-                        }else {
+                            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
+                        } else{
                             startLocationUpdates();
                         }
-
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                         // Location settings are not satisfied, but this can be fixed
@@ -192,7 +193,7 @@ public class EventListFragment extends Fragment implements
                             // and check the result in onActivityResult().
                             status.startResolutionForResult(
                                     getActivity(),
-                                    0x1);
+                                    REQUEST_LOCATION_PERMISSION);
                         } catch (IntentSender.SendIntentException e) {
                             // Ignore the error.
                         }
@@ -207,7 +208,7 @@ public class EventListFragment extends Fragment implements
         });
     }
     private void updateUI(){
-        getEventTask = new GetEventTask(eventCallbackListener, getActivity(), latitude, longitude);
+        getEventTask = new GetEventTask(eventCallbackListener, latitude, longitude);
         getEventTask.execute();
     }
     @Override
@@ -230,11 +231,11 @@ public class EventListFragment extends Fragment implements
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
-        if (requestCode == 0x1){
+        if (requestCode == REQUEST_LOCATION_PERMISSION){
             if (resultCode == RESULT_OK){
                 if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                         && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
                 }else {
                     startLocationUpdates();
                 }
