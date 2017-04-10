@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import com.gaggle.snoretrain.gaggle.activities.NavActivity;
 import com.gaggle.snoretrain.gaggle.listener.IEventCallbackListener;
 import com.gaggle.snoretrain.gaggle.models.EventListModel;
+import com.gaggle.snoretrain.gaggle.utils.GaggleApi;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -38,8 +39,8 @@ public class GetEventTask extends AsyncTask<String, String, EventListModel> {
         EventListModel eventModels = new EventListModel();
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("http://45.63.94.22/parties/params?" +
-                "longitude=" + Double.toString(longitude) +
+                .url(GaggleApi.BASE_URL + "events/params?token="
+                + GaggleApi.USER_TOKEN + "&longitude=" + Double.toString(longitude) +
                 "&latitude=" + Double.toString(latitude) +
                 "&radius=" + Integer.toString(100))
                 .build();

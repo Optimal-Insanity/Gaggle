@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.gaggle.snoretrain.gaggle.R;
 import com.gaggle.snoretrain.gaggle.models.UserModel;
+import com.gaggle.snoretrain.gaggle.utils.GaggleApi;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -46,9 +47,12 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.HttpUrl;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -343,10 +347,14 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
             //String url = urlBuilder.build().toString();
 
             OkHttpClient client = new OkHttpClient();
+            RequestBody requestBody = new FormBody.Builder()
+                    .add("username", mEmail)
+                    .add("password", mPassword)
+                    .build();
 
             Request request = new Request.Builder()
-                    .url("http://45.63.94.22/authenticate?user_name="
-                            + mEmail + "&password=" + mPassword).build();
+                    .url(GaggleApi.BASE_URL +"users/login/")
+                    .post(requestBody).build();
 
             final Gson gson = new Gson();
             Response response = null;
@@ -359,6 +367,9 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
             if (user == null) {
                 return false;
             }
+            //SharedPreferences sp = getSharedPreferences("GagglePrefs", MODE_PRIVATE);
+            //sp.edit().putString("token", user.getToken()).apply();
+            GaggleApi.USER_TOKEN = user.getToken();
             // TODO: register the new account here.
             return true;
         }

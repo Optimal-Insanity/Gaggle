@@ -18,6 +18,8 @@ public class UserModel implements Serializable{
     private String lname;
     @SerializedName("user_id")
     private int userId;
+    @SerializedName("token")
+    private String token;
     public String getUserName(){
 
         return user_name;
@@ -32,5 +34,9 @@ public class UserModel implements Serializable{
     }
     public String getLname() {
         return lname;
+    }
+
+    public String getToken() {
+        return token;
     }
 }

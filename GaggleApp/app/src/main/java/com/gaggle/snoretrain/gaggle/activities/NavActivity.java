@@ -209,6 +209,8 @@ public class NavActivity extends AppCompatActivity
         viewPagerAdapter.addFragment(groupListFragment, getString(R.string.notification_tab_title));
 
         vp.setAdapter(viewPagerAdapter);
+        vp.setPageMargin(20);
+        vp.setPageMarginDrawable(R.drawable.vp_margin);
     }
     class Adapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragments = new ArrayList<>();

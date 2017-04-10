@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -100,6 +101,10 @@ public class EventListFragment extends Fragment implements
                 eventRecycler.setAdapter(eventRVAdapter);
                 //get the llm for this activity and make recycler use it
                 eventAttendingRVLayoutManager = new LinearLayoutManager(getActivity());
+                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(eventRecycler.getContext(),
+                        eventAttendingRVLayoutManager.getOrientation());
+                dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.vp_margin, getContext().getTheme()));
+                eventRecycler.addItemDecoration(dividerItemDecoration);
                 eventRecycler.setLayoutManager(eventAttendingRVLayoutManager);
             }
         };

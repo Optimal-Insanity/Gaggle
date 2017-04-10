@@ -25,6 +25,7 @@ public class ConversationActivity extends AppCompatActivity {
         MessagesModel messagesModel = (MessagesModel)intent.getSerializableExtra("messages");
         conversationFragment = new ConversationFragment();
         conversationFragment.setMessages(messagesModel);
+        setTitle(messagesModel.getFname() + " " + messagesModel.getLname());
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_messages, conversationFragment);
         transaction.addToBackStack(null);

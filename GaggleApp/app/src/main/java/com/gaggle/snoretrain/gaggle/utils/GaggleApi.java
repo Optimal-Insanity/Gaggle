@@ -6,6 +6,7 @@ package com.gaggle.snoretrain.gaggle.utils;
 
 public class GaggleApi {
 
-    public static String BASE_URL = "http://gaggleapi.herokuapp.com/";
+    public static String BASE_URL = "https://api.optimalinsanity.com/";
+    public static String USER_TOKEN;
 
 }

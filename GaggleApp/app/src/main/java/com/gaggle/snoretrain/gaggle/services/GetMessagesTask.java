@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import com.gaggle.snoretrain.gaggle.listener.IMessageCallbackListener;
 import com.gaggle.snoretrain.gaggle.models.MessageResponseModel;
 import com.gaggle.snoretrain.gaggle.models.MessagesModel;
+import com.gaggle.snoretrain.gaggle.utils.GaggleApi;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -30,9 +31,11 @@ public class GetMessagesTask extends AsyncTask<String, String, MessageResponseMo
     protected MessageResponseModel doInBackground(String... strings){
         MessageResponseModel messageModels = new MessageResponseModel();
         OkHttpClient client = new OkHttpClient();
+
         Request request = new Request.Builder()
-                .url("http://45.63.94.22/messages/params?"+
-                        "user_id=" + userId)
+                .url(GaggleApi.BASE_URL + "messages/params?token="+
+                        GaggleApi.USER_TOKEN +
+                        "&user_id=" + userId)
                 .build();
         final Gson gson = new Gson();
         Response response = null;
