@@ -32,8 +32,9 @@
     <string name="apply_button">Apply!</string>
     <string name="add_button">Add Members</string>
     <string name="leave_button">Leave</string>
-    <string name="party_tab_title">Parties</string>
+    <string name="event_tab_title">Events</string>
     <string name="group_tab_title">Groups</string>
     <string name="message_tab_title">Messages</string>
     <string name="notification_tab_title">Notifications</string>
+    <string name="message_hint">Write a message...</string>
 </resources>

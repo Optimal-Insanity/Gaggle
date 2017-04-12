@@ -2,6 +2,7 @@ package com.gaggle.snoretrain.gaggle.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -62,6 +63,10 @@ public class MessageListFragment extends Fragment {
 
                 //get the layout manager for this activity and make RV use it
                 LinearLayoutManager messageRVLayoutManager = new LinearLayoutManager(getActivity());
+                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(threadRecycler.getContext(),
+                        messageRVLayoutManager.getOrientation());
+                dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.vp_margin, getContext().getTheme()));
+                threadRecycler.addItemDecoration(dividerItemDecoration);
                 threadRecycler.setLayoutManager(messageRVLayoutManager);
             }
         };

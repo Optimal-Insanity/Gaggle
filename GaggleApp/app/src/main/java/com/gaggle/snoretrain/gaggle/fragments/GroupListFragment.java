@@ -64,6 +64,7 @@ public class GroupListFragment extends Fragment {
                 DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(groupRecycler.getContext(),
                         groupRVLayoutManager.getOrientation());
                 dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.vp_margin, getContext().getTheme()));
+                groupRecycler.addItemDecoration(dividerItemDecoration);
                 groupRecycler.setLayoutManager(groupRVLayoutManager);
             }
         };

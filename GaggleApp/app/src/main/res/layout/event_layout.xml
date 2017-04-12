@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/white"
     android:id="@+id/party_layout">
 
         <ImageView
@@ -114,10 +115,5 @@
                     android:background="@android:color/transparent"
                     android:src="@drawable/ic_reply_black_16dp"/>
         </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_alignParentBottom="true"
-            android:background="@android:color/darker_gray"/>
 
 </RelativeLayout>

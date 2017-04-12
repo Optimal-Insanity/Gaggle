@@ -34,4 +34,8 @@ public class MessagesModel extends DataSet{
     public int getUserId() {
         return userId;
     }
+
+    public void addMessage(MessageModel m){
+        messages.add(m);
+    }
 }

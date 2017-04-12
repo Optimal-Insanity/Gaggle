@@ -3,6 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/white"
     android:id="@+id/group_layout">
     <ImageView
         android:id="@+id/group_icon"
@@ -16,11 +17,4 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/group_icon"
         android:layout_centerVertical="true"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/darker_gray"/>
-
-
 </RelativeLayout>

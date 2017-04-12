@@ -34,6 +34,10 @@ public class ConversationRVAdapter extends RecyclerView.Adapter<ConversationView
     public void setWidthDp(float widthDp){
         width = (int)widthDp;
     }
+    public void addMessage(MessageModel model){
+        thread.add(model);
+        notifyDataSetChanged();
+    }
 
     @Override
     public void onBindViewHolder(final ConversationViewHolder holder, final int position){

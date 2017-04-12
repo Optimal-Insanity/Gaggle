@@ -3,6 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/white"
     android:id="@+id/connection_list_layout">
     <ImageView
         android:id="@+id/connection_icon"
@@ -26,9 +27,4 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/darker_gray"/>
 </RelativeLayout>

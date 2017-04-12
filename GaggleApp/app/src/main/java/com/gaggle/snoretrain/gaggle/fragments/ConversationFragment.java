@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.gaggle.snoretrain.gaggle.R;
 import com.gaggle.snoretrain.gaggle.adapters.ConversationRVAdapter;
+import com.gaggle.snoretrain.gaggle.models.MessageModel;
 import com.gaggle.snoretrain.gaggle.models.MessageResponseModel;
 import com.gaggle.snoretrain.gaggle.models.MessagesModel;
 
@@ -28,11 +29,16 @@ public class ConversationFragment extends Fragment {
     @BindView(R.id.fragment_recycler_view)
     RecyclerView conversationRecycler;
     MessagesModel messagesModel;
+    ConversationRVAdapter conversationRVAdapter;
     public ConversationFragment(){
 
     }
     public void setMessages(MessagesModel models){
         messagesModel = models;
+    }
+    public void addMessage(MessageModel model) {
+        messagesModel.addMessage(model);
+        conversationRVAdapter.addMessage(model);
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,7 +56,7 @@ public class ConversationFragment extends Fragment {
         DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();
         ((Activity)getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
         float dpWidth = metrics.widthPixels;
-        ConversationRVAdapter conversationRVAdapter = new ConversationRVAdapter(messagesModel.getMessages());
+        conversationRVAdapter = new ConversationRVAdapter(messagesModel.getMessages());
         conversationRVAdapter.setWidthDp(dpWidth);
         conversationRecycler.setAdapter(conversationRVAdapter);
 

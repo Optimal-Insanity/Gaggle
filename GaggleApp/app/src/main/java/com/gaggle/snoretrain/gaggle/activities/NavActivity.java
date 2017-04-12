@@ -201,30 +201,49 @@ public class NavActivity extends AppCompatActivity
     private void setViewPager(ViewPager vp){
         viewPagerAdapter = new Adapter(getSupportFragmentManager());
 
-        viewPagerAdapter.addFragment(eventListFragment, getString(R.string.party_tab_title));
+        viewPagerAdapter.addFragment(eventListFragment, getString(R.string.event_tab_title));
         viewPagerAdapter.addFragment(groupListFragment, getString(R.string.group_tab_title));
         viewPagerAdapter.addFragment(messageListFragment, getString(R.string.message_tab_title));
+
         groupListFragment = new GroupListFragment();
         groupListFragment.setUser(user);
+
         viewPagerAdapter.addFragment(groupListFragment, getString(R.string.notification_tab_title));
 
         vp.setAdapter(viewPagerAdapter);
+        vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                setTitle(viewPagerAdapter.getTitles(position));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         vp.setPageMargin(20);
-        vp.setPageMarginDrawable(R.drawable.vp_margin);
     }
-    class Adapter extends FragmentPagerAdapter {
+    class Adapter extends FragmentPagerAdapter{
         private final List<Fragment> mFragments = new ArrayList<>();
         private final List<String> mFragmentTitles = new ArrayList<>();
 
-        public Adapter(FragmentManager fm) {
+        Adapter(FragmentManager fm) {
             super(fm);
         }
 
-        public void addFragment(Fragment fragment, String title) {
+        void addFragment(Fragment fragment, String title) {
             mFragments.add(fragment);
             mFragmentTitles.add(title);
         }
-
+        String getTitles(int position){
+            return mFragmentTitles.get(position);
+        }
         @Override
         public Fragment getItem(int position) {
             return mFragments.get(position);
