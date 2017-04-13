@@ -70,7 +70,7 @@ public class MessageListFragment extends Fragment {
                 threadRecycler.setLayoutManager(messageRVLayoutManager);
             }
         };
-        GetMessagesTask getMessagesTask = new GetMessagesTask(messageCallbackListener, user.getUserId());
+        GetMessagesTask getMessagesTask = new GetMessagesTask(messageCallbackListener);
         getMessagesTask.execute();
         return root;
     }

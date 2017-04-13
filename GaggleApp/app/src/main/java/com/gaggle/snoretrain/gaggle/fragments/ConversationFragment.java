@@ -18,6 +18,8 @@ import com.gaggle.snoretrain.gaggle.models.MessageResponseModel;
 import com.gaggle.snoretrain.gaggle.models.MessagesModel;
 
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -36,9 +38,11 @@ public class ConversationFragment extends Fragment {
     public void setMessages(MessagesModel models){
         messagesModel = models;
     }
-    public void addMessage(MessageModel model) {
-        messagesModel.addMessage(model);
-        conversationRVAdapter.addMessage(model);
+    public void updateMessages(ArrayList<MessageModel> model) {
+        messagesModel.setMessages(model);
+        conversationRVAdapter.updateMessages(model);
+        conversationRecycler.setAdapter(conversationRVAdapter);
+
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {

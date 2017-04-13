@@ -1,5 +1,8 @@
 package com.gaggle.snoretrain.gaggle.activities;
 
+import android.Manifest;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -10,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -346,7 +350,7 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
                     .build();
 
             Request request = new Request.Builder()
-                    .url(GaggleApi.BASE_URL +"users/login/")
+                    .url(GaggleApi.BASE_URL + "authentication/login/")
                     .post(requestBody).build();
 
             final Gson gson = new Gson();
@@ -362,6 +366,17 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
             }
             //SharedPreferences sp = getSharedPreferences("GagglePrefs", MODE_PRIVATE);
             //sp.edit().putString("token", user.getToken()).apply();
+            //AccountManager accountManager = AccountManager.get(getBaseContext());
+            //if (ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                //Account[] account = accountManager.getAccountsByType(R.string.account_type);
+            //}
             GaggleApi.USER_TOKEN = user.getToken();
             // TODO: register the new account here.
             return true;

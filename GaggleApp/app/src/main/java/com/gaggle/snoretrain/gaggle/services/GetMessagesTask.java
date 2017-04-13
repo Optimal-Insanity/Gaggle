@@ -20,12 +20,10 @@ import okhttp3.Response;
 
 public class GetMessagesTask extends AsyncTask<String, String, MessageResponseModel> {
     private IMessageCallbackListener messageCallbackListener;
-    private int userId;
 
-    public GetMessagesTask(final IMessageCallbackListener mcl, int uId){
+    public GetMessagesTask(final IMessageCallbackListener mcl){
 
         messageCallbackListener = mcl;
-        userId = uId;
     }
     @Override
     protected MessageResponseModel doInBackground(String... strings){
@@ -33,9 +31,8 @@ public class GetMessagesTask extends AsyncTask<String, String, MessageResponseMo
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url(GaggleApi.BASE_URL + "messages/params?token="+
-                        GaggleApi.USER_TOKEN +
-                        "&user_id=" + userId)
+                .url(GaggleApi.BASE_URL + "messages/get?token="+
+                        GaggleApi.USER_TOKEN)
                 .build();
         final Gson gson = new Gson();
         Response response = null;

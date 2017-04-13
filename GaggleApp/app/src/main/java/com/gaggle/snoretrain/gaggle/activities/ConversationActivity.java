@@ -11,8 +11,12 @@ import android.widget.ImageButton;
 
 import com.gaggle.snoretrain.gaggle.R;
 import com.gaggle.snoretrain.gaggle.fragments.ConversationFragment;
+import com.gaggle.snoretrain.gaggle.listener.IMessageSendCallbackListener;
 import com.gaggle.snoretrain.gaggle.models.MessageModel;
 import com.gaggle.snoretrain.gaggle.models.MessagesModel;
+import com.gaggle.snoretrain.gaggle.services.SendMessageTask;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,13 +31,15 @@ public class ConversationActivity extends AppCompatActivity {
     ImageButton sendMessageButton;
     @BindView(R.id.message_text)
     EditText messageText;
+    private int receiverId;
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.conversation_layout);
         ButterKnife.bind(this);
         Intent intent = getIntent();
-        MessagesModel messagesModel = (MessagesModel)intent.getSerializableExtra("messages");
+        final MessagesModel messagesModel = (MessagesModel)intent.getSerializableExtra("messages");
+        receiverId = messagesModel.getUserId();
         conversationFragment = new ConversationFragment();
         conversationFragment.setMessages(messagesModel);
         setTitle(messagesModel.getFname() + " " + messagesModel.getLname());
@@ -41,10 +47,18 @@ public class ConversationActivity extends AppCompatActivity {
         transaction.replace(R.id.fragment_messages, conversationFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+
         sendMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                messageText.getText();
+                SendMessageTask sendMessageTask = new SendMessageTask(new IMessageSendCallbackListener() {
+                    @Override
+                    public void onSendCallback(ArrayList<MessageModel> messages) {
+                        conversationFragment.updateMessages(messages);
+                    }
+                }, messageText.getText().toString(), receiverId);
+                sendMessageTask.execute();
+                messageText.setText("");
             }
         });
     }

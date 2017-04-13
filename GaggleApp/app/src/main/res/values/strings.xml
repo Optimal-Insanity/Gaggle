@@ -37,4 +37,5 @@
     <string name="message_tab_title">Messages</string>
     <string name="notification_tab_title">Notifications</string>
     <string name="message_hint">Write a message...</string>
+    <string name="account_type">com.gaggle.snoretrain.gaggle</string>
 </resources>

@@ -38,4 +38,8 @@ public class MessagesModel extends DataSet{
     public void addMessage(MessageModel m){
         messages.add(m);
     }
+
+    public void setMessages(ArrayList<MessageModel> messages) {
+        this.messages = messages;
+    }
 }

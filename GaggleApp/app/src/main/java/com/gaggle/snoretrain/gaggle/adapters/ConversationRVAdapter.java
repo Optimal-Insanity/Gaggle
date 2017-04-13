@@ -34,8 +34,8 @@ public class ConversationRVAdapter extends RecyclerView.Adapter<ConversationView
     public void setWidthDp(float widthDp){
         width = (int)widthDp;
     }
-    public void addMessage(MessageModel model){
-        thread.add(model);
+    public void updateMessages(ArrayList<MessageModel> model){
+        thread = model;
         notifyDataSetChanged();
     }
 
