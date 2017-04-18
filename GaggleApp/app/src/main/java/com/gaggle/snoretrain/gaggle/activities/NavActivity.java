@@ -178,9 +178,9 @@ public class NavActivity extends AppCompatActivity
 
         if (id == R.id.my_connections) {
             // Send user to group fragment
-            setFragment(new GroupListFragment());
+            //replace the entire viewpager with friends/groups;
         } else if (id == R.id.my_events) {
-            setFragment(new MyEventListFragment());
+            //replace the entire viewpager with your person events;
         }  else if (id == R.id.nav_share) {
 
         } else if (id == R.id.gaggle_stories) {
