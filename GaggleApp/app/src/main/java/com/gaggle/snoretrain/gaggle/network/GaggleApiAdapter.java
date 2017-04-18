@@ -8,6 +8,7 @@ import com.gaggle.snoretrain.gaggle.models.UserModel;
 
 import retrofit2.http.Body;
 import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -18,6 +19,7 @@ import rx.Observable;
  */
 
 public interface GaggleApiAdapter {
+    @FormUrlEncoded
     @POST("/authentication/login")
     Observable<UserModel> loginUser(@Field("username") String username, @Field("password") String password);
 

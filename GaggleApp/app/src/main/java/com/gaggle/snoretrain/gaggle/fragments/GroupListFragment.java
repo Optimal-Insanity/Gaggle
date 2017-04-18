@@ -2,7 +2,6 @@ package com.gaggle.snoretrain.gaggle.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.media.VolumeProviderCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,15 +14,9 @@ import com.gaggle.snoretrain.gaggle.adapters.GroupRVAdapter;
 import com.gaggle.snoretrain.gaggle.interactor.ApiInteractor;
 import com.gaggle.snoretrain.gaggle.interactor.GaggleApplicationView;
 import com.gaggle.snoretrain.gaggle.interactor.Interactor;
-import com.gaggle.snoretrain.gaggle.listener.IGroupCallbackListener;
 import com.gaggle.snoretrain.gaggle.models.GroupListModel;
-import com.gaggle.snoretrain.gaggle.models.GroupModel;
 import com.gaggle.snoretrain.gaggle.models.UserModel;
 import com.gaggle.snoretrain.gaggle.presenter.ViewPresenter;
-import com.gaggle.snoretrain.gaggle.services.GetGroupTask;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

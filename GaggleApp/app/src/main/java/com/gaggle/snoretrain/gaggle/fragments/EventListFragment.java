@@ -4,13 +4,10 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.icu.text.DateFormat;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,10 +17,12 @@ import android.view.ViewGroup;
 
 import com.gaggle.snoretrain.gaggle.R;
 import com.gaggle.snoretrain.gaggle.adapters.EventRVAdapter;
-import com.gaggle.snoretrain.gaggle.listener.IEventCallbackListener;
+import com.gaggle.snoretrain.gaggle.interactor.ApiInteractor;
+import com.gaggle.snoretrain.gaggle.interactor.GaggleApplicationView;
+import com.gaggle.snoretrain.gaggle.interactor.Interactor;
 import com.gaggle.snoretrain.gaggle.models.EventListModel;
 
-import com.gaggle.snoretrain.gaggle.services.GetEventTask;
+import com.gaggle.snoretrain.gaggle.presenter.ViewPresenter;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -50,15 +49,13 @@ import static android.app.Activity.RESULT_OK;
  */
 
 public class EventListFragment extends Fragment implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, GaggleApplicationView<EventListModel>{
     @BindView(R.id.fragment_recycler_view)
     RecyclerView eventRecycler;
     private EventRVAdapter eventRVAdapter;
     private LinearLayoutManager eventAttendingRVLayoutManager;
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
-    private GetEventTask getEventTask;
-    private IEventCallbackListener eventCallbackListener;
     private double latitude;
     private double longitude;
     private GoogleApiClient mGoogleApiClient;
@@ -97,17 +94,17 @@ public class EventListFragment extends Fragment implements
         eventAttendingRVLayoutManager = new LinearLayoutManager(getActivity());
         final DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(eventRecycler.getContext(),
                 eventAttendingRVLayoutManager.getOrientation());
-        eventCallbackListener = new IEventCallbackListener() {
+        dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.vp_margin, getContext().getTheme()));
+        eventRecycler.addItemDecoration(dividerItemDecoration);
+        eventRecycler.setLayoutManager(eventAttendingRVLayoutManager);
+        /*eventCallbackListener = new IEventCallbackListener() {
             @Override
             public void onSearchCallBack(EventListModel eventModels) {
                 eventRVAdapter = new EventRVAdapter(eventModels);
                 eventRecycler.setAdapter(eventRVAdapter);
                 //get the llm for this activity and make recycler use it
-                dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.vp_margin, getContext().getTheme()));
-                eventRecycler.addItemDecoration(dividerItemDecoration);
-                eventRecycler.setLayoutManager(eventAttendingRVLayoutManager);
             }
-        };
+        };*/
 
         return root;
     }
@@ -220,8 +217,16 @@ public class EventListFragment extends Fragment implements
         });
     }
     private void updateUI(){
-        getEventTask = new GetEventTask(eventCallbackListener, latitude, longitude);
-        getEventTask.execute();
+        Interactor interactor = new ApiInteractor.Builder()
+                .setAdapterMethod("getEvents")
+                .setMethodParameters(
+                        Double.toString(longitude),
+                        Double.toString(latitude),
+                        Integer.toString(100))
+                .setMethodParameterTypes(String.class, String.class, String.class)
+                .build();
+        ViewPresenter presenter = new ViewPresenter(this, interactor);
+        presenter.getData();
     }
     @Override
     public void onLocationChanged(Location location) {
@@ -255,4 +260,9 @@ public class EventListFragment extends Fragment implements
         }
     }
 
+    @Override
+    public void presentGaggleData(EventListModel data) {
+        eventRVAdapter = new EventRVAdapter(data);
+        eventRecycler.setAdapter(eventRVAdapter);
+    }
 }

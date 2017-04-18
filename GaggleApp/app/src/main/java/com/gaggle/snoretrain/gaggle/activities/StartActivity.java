@@ -78,11 +78,6 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
     private UserModel user;
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    /*
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
-
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
@@ -171,10 +166,6 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
-
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -212,8 +203,13 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute();
+            Interactor interactor = new ApiInteractor.Builder()
+                    .setAdapterMethod("loginUser")
+                    .setMethodParameters(email, password)
+                    .setMethodParameterTypes(String.class, String.class)
+                    .build();
+            ViewPresenter presenter = new ViewPresenter(this, interactor);
+            presenter.getData();
 
         }
     }
@@ -224,6 +220,7 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
             ApiValues.USER_TOKEN = data.getToken();
             Intent intent = new Intent(StartActivity.this, NavActivity.class);
             intent.putExtra("UserObj", data);
+            showProgress(false);
             startActivity(intent);
         }
     }
@@ -333,92 +330,5 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            //HttpUrl.Builder urlBuilder = HttpUrl.parse("https://gaggleapi.herokuapp.com/authenticate").newBuilder();
-            //urlBuilder.addQueryParameter("user_name", mEmail);
-            //urlBuilder.addQueryParameter("password", mPassword);
-
-            //String url = urlBuilder.build().toString();
-
-            OkHttpClient client = new OkHttpClient();
-            RequestBody requestBody = new FormBody.Builder()
-                    .add("username", mEmail)
-                    .add("password", mPassword)
-                    .build();
-
-            Request request = new Request.Builder()
-                    .url(ApiValues.BASE_URL + "/authentication/login/")
-                    .post(requestBody).build();
-
-            final Gson gson = new Gson();
-            Response response = null;
-            try {
-                response = client.newCall(request).execute();
-                user = gson.fromJson(response.body().charStream(), UserModel.class);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (user == null) {
-                return false;
-            }
-            //SharedPreferences sp = getSharedPreferences("GagglePrefs", MODE_PRIVATE);
-            //sp.edit().putString("token", user.getToken()).apply();
-            //AccountManager accountManager = AccountManager.get(getBaseContext());
-            //if (ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                //Account[] account = accountManager.getAccountsByType(R.string.account_type);
-            //}
-            ApiValues.USER_TOKEN = user.getToken();
-            // TODO: register the new account here.
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success && user.getUserName() != null) {
-                Intent intent = new Intent(StartActivity.this, NavActivity.class);
-                intent.putExtra("UserObj", user);
-                startActivity(intent);
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
-    }
 }
 

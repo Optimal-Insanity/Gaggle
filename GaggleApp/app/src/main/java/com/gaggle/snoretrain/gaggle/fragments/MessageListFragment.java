@@ -2,7 +2,6 @@ package com.gaggle.snoretrain.gaggle.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.media.VolumeProviderCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,11 +15,9 @@ import com.gaggle.snoretrain.gaggle.interactor.ApiInteractor;
 import com.gaggle.snoretrain.gaggle.interactor.GaggleApplicationView;
 import com.gaggle.snoretrain.gaggle.interactor.Interactor;
 import com.gaggle.snoretrain.gaggle.listener.IExpandCallbackListener;
-import com.gaggle.snoretrain.gaggle.listener.IMessageCallbackListener;
 import com.gaggle.snoretrain.gaggle.models.MessageResponseModel;
 import com.gaggle.snoretrain.gaggle.models.UserModel;
 import com.gaggle.snoretrain.gaggle.presenter.ViewPresenter;
-import com.gaggle.snoretrain.gaggle.services.GetMessagesTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,8 +31,6 @@ public class MessageListFragment extends Fragment implements GaggleApplicationVi
     RecyclerView threadRecycler;
     private UserModel user;
     private IExpandCallbackListener expandCallbackListener;
-    IMessageCallbackListener messageCallbackListener;
-    GetMessagesTask getMessagesTask;
     public MessageListFragment(){
 
     }
@@ -86,13 +81,13 @@ public class MessageListFragment extends Fragment implements GaggleApplicationVi
     @Override
     public void onResume() {
         super.onResume();
-        /*Interactor interactor = new ApiInteractor.Builder()
+        Interactor interactor = new ApiInteractor.Builder()
                 .setAdapterMethod("getMessages")
                 .setMethodParameters(null)
                 .setMethodParameterTypes(null)
                 .build();
         ViewPresenter presenter = new ViewPresenter(this, interactor);
-        presenter.getData();*/
+        presenter.getData();
     }
 
     @Override

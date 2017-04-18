@@ -48,7 +48,6 @@ public class GaggleApiClient {
 
         public GaggleApiClient build() {
             GaggleApiClient out = client;
-            client = null;
             return out;
         }
     }
