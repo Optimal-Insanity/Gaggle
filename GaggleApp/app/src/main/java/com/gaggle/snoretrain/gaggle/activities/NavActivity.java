@@ -79,7 +79,6 @@ public class NavActivity extends AppCompatActivity
         groupListFragment = new GroupListFragment();
         messageListFragment = new MessageListFragment();
         groupListFragment.setUser(user);
-        messageListFragment.setUser(user);
         messageListFragment.setExpandCallbackListener(new IExpandCallbackListener() {
             @Override
             public void onTapCallback(DataSet expandedData) {
@@ -127,7 +126,7 @@ public class NavActivity extends AppCompatActivity
                     public void onTabUnselected(TabLayout.Tab tab) {
                         super.onTabUnselected(tab);
                         tab.getIcon().setColorFilter(
-                                Color.DKGRAY, PorterDuff.Mode.SRC_IN);
+                                Color.GRAY, PorterDuff.Mode.SRC_IN);
                     }
 
                     @Override
@@ -177,17 +176,12 @@ public class NavActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.my_groups) {
+        if (id == R.id.my_connections) {
             // Send user to group fragment
             setFragment(new GroupListFragment());
         } else if (id == R.id.my_events) {
             setFragment(new MyEventListFragment());
-        } else if (id == R.id.area_events) {
-            // Send user to party fragment
-            setFragment(new EventListFragment());
-        } else if (id == R.id.attending_events) {
-            setFragment(new AttendingEventListFragment());
-        } else if (id == R.id.nav_share) {
+        }  else if (id == R.id.nav_share) {
 
         } else if (id == R.id.gaggle_stories) {
 

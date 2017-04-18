@@ -2,6 +2,7 @@ package com.gaggle.snoretrain.gaggle.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.media.VolumeProviderCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,10 +12,14 @@ import android.view.ViewGroup;
 
 import com.gaggle.snoretrain.gaggle.R;
 import com.gaggle.snoretrain.gaggle.adapters.GroupRVAdapter;
+import com.gaggle.snoretrain.gaggle.interactor.ApiInteractor;
+import com.gaggle.snoretrain.gaggle.interactor.GaggleApplicationView;
+import com.gaggle.snoretrain.gaggle.interactor.Interactor;
 import com.gaggle.snoretrain.gaggle.listener.IGroupCallbackListener;
 import com.gaggle.snoretrain.gaggle.models.GroupListModel;
 import com.gaggle.snoretrain.gaggle.models.GroupModel;
 import com.gaggle.snoretrain.gaggle.models.UserModel;
+import com.gaggle.snoretrain.gaggle.presenter.ViewPresenter;
 import com.gaggle.snoretrain.gaggle.services.GetGroupTask;
 
 import java.util.ArrayList;
@@ -27,7 +32,7 @@ import butterknife.ButterKnife;
  * Created by Snore Train on 2/22/2017.
  */
 
-public class GroupListFragment extends Fragment {
+public class GroupListFragment extends Fragment implements GaggleApplicationView<GroupListModel>{
     @BindView(R.id.fragment_recycler_view)
     RecyclerView groupRecycler;
     private UserModel user;
@@ -51,8 +56,13 @@ public class GroupListFragment extends Fragment {
 
         //bind list of views that need binding
         ButterKnife.bind(this, root);
-
-        IGroupCallbackListener groupCallbackListener = new IGroupCallbackListener() {
+        LinearLayoutManager groupRVLayoutManager = new LinearLayoutManager(getActivity());
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(groupRecycler.getContext(),
+                groupRVLayoutManager.getOrientation());
+        dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.vp_margin, getContext().getTheme()));
+        groupRecycler.addItemDecoration(dividerItemDecoration);
+        groupRecycler.setLayoutManager(groupRVLayoutManager);
+        /*IGroupCallbackListener groupCallbackListener = new IGroupCallbackListener() {
             @Override
             public void onSearchCallback(GroupListModel groupModels) {
                 //Create new adapter of GroupRVAdapter type and set the RV adapter to it
@@ -69,7 +79,20 @@ public class GroupListFragment extends Fragment {
             }
         };
         GetGroupTask getGroupTask = new GetGroupTask(groupCallbackListener, user.getUserId());
-        getGroupTask.execute();
+        getGroupTask.execute();*/
+        Interactor interactor = new ApiInteractor.Builder()
+                .setAdapterMethod("getGroups")
+                .setMethodParameters(null)
+                .setMethodParameterTypes(null)
+                .build();
+        ViewPresenter presenter = new ViewPresenter(this, interactor);
+        presenter.getData();
         return root;
+    }
+
+    @Override
+    public void presentGaggleData(GroupListModel data) {
+        GroupRVAdapter groupRVAdapter = new GroupRVAdapter(data);
+        groupRecycler.setAdapter(groupRVAdapter);
     }
 }

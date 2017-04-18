@@ -42,6 +42,9 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
         //set view info for each group in list
         message.setText(messageData.getMessage());
         message.setMaxWidth(maxWidth);
+        if (messageData.getMessageTime().charAt(0) == '0'){
+            messageData.setMessageTime(messageData.getMessageTime().substring(1));
+        }
         messageTime.setText(messageData.getMessageTime());
         if (messageData.getSenderId() == userId){
             chatLayout.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);

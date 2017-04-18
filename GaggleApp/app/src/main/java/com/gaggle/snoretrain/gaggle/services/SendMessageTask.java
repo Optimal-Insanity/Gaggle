@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import com.gaggle.snoretrain.gaggle.listener.IMessageSendCallbackListener;
 import com.gaggle.snoretrain.gaggle.models.MessageModel;
 import com.gaggle.snoretrain.gaggle.models.MessagesModel;
-import com.gaggle.snoretrain.gaggle.utils.GaggleApi;
+import com.gaggle.snoretrain.gaggle.network.ApiValues;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -36,8 +36,8 @@ public class SendMessageTask extends AsyncTask<String, String, ArrayList<Message
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url(GaggleApi.BASE_URL + "messages/send?token=" +
-                        GaggleApi.USER_TOKEN + "&receiver_id=" +
+                .url(ApiValues.BASE_URL + "/messages/send?token=" +
+                        ApiValues.USER_TOKEN + "&receiver_id=" +
                         receiverId + "&message=" + message)
                 .build();
         final Gson gson = new Gson();

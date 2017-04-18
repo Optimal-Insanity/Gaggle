@@ -44,4 +44,8 @@ public class MessageModel extends DataSet{
     public String getMessageDate() {
         return messageDate;
     }
+
+    public void setMessageTime(String messageTime) {
+        this.messageTime = messageTime;
+    }
 }

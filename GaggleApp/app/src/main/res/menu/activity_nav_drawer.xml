@@ -3,17 +3,11 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/area_events"
-            android:title="@string/area_events" />
-        <item
             android:id="@+id/my_events"
             android:title="@string/my_events" />
         <item
-            android:id="@+id/my_groups"
-            android:title="@string/my_groups" />
-        <item
-            android:id="@+id/attending_events"
-            android:title="@string/attending_events" />
+            android:id="@+id/my_connections"
+            android:title="@string/my_connections" />
     </group>
 
     <item android:title="Communicate">

@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 
 import com.gaggle.snoretrain.gaggle.listener.IGroupCallbackListener;
 import com.gaggle.snoretrain.gaggle.models.GroupListModel;
-import com.gaggle.snoretrain.gaggle.utils.GaggleApi;
+import com.gaggle.snoretrain.gaggle.network.ApiValues;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -33,8 +33,8 @@ public class GetGroupTask extends AsyncTask<String, String, GroupListModel> {
         GroupListModel groupModels = new GroupListModel();
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url(GaggleApi.BASE_URL + "groups/params?token="+
-                        GaggleApi.USER_TOKEN +
+                .url(ApiValues.BASE_URL + "/groups/params?token="+
+                        ApiValues.USER_TOKEN +
                         "&user_id=" + userId)
                 .build();
         final Gson gson = new Gson();

@@ -39,8 +39,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gaggle.snoretrain.gaggle.R;
+import com.gaggle.snoretrain.gaggle.interactor.ApiInteractor;
+import com.gaggle.snoretrain.gaggle.interactor.GaggleApplicationView;
+import com.gaggle.snoretrain.gaggle.interactor.Interactor;
 import com.gaggle.snoretrain.gaggle.models.UserModel;
-import com.gaggle.snoretrain.gaggle.utils.GaggleApi;
+import com.gaggle.snoretrain.gaggle.network.ApiValues;
+import com.gaggle.snoretrain.gaggle.network.GaggleApiAdapter;
+import com.gaggle.snoretrain.gaggle.network.GaggleApiClient;
+import com.gaggle.snoretrain.gaggle.presenter.ViewPresenter;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -64,7 +70,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class StartActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class StartActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>, GaggleApplicationView<UserModel> {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -207,7 +213,18 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
             // perform the user login attempt.
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            mAuthTask.execute();
+
+        }
+    }
+
+    @Override
+    public void presentGaggleData(UserModel data) {
+        if (data != null) {
+            ApiValues.USER_TOKEN = data.getToken();
+            Intent intent = new Intent(StartActivity.this, NavActivity.class);
+            intent.putExtra("UserObj", data);
+            startActivity(intent);
         }
     }
 
@@ -350,7 +367,7 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
                     .build();
 
             Request request = new Request.Builder()
-                    .url(GaggleApi.BASE_URL + "authentication/login/")
+                    .url(ApiValues.BASE_URL + "/authentication/login/")
                     .post(requestBody).build();
 
             final Gson gson = new Gson();
@@ -377,7 +394,7 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
                 // for ActivityCompat#requestPermissions for more details.
                 //Account[] account = accountManager.getAccountsByType(R.string.account_type);
             //}
-            GaggleApi.USER_TOKEN = user.getToken();
+            ApiValues.USER_TOKEN = user.getToken();
             // TODO: register the new account here.
             return true;
         }

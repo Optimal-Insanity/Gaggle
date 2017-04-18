@@ -50,7 +50,7 @@ import static android.app.Activity.RESULT_OK;
  */
 
 public class EventListFragment extends Fragment implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     @BindView(R.id.fragment_recycler_view)
     RecyclerView eventRecycler;
     private EventRVAdapter eventRVAdapter;
@@ -85,7 +85,7 @@ public class EventListFragment extends Fragment implements
 
         //bind views that need binding
         ButterKnife.bind(this, root);
-        if (mGoogleApiClient == null){
+        if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
@@ -94,15 +94,15 @@ public class EventListFragment extends Fragment implements
         }
         mGoogleApiClient.connect();
         createLocationRequest();
+        eventAttendingRVLayoutManager = new LinearLayoutManager(getActivity());
+        final DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(eventRecycler.getContext(),
+                eventAttendingRVLayoutManager.getOrientation());
         eventCallbackListener = new IEventCallbackListener() {
             @Override
             public void onSearchCallBack(EventListModel eventModels) {
                 eventRVAdapter = new EventRVAdapter(eventModels);
                 eventRecycler.setAdapter(eventRVAdapter);
                 //get the llm for this activity and make recycler use it
-                eventAttendingRVLayoutManager = new LinearLayoutManager(getActivity());
-                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(eventRecycler.getContext(),
-                        eventAttendingRVLayoutManager.getOrientation());
                 dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.vp_margin, getContext().getTheme()));
                 eventRecycler.addItemDecoration(dividerItemDecoration);
                 eventRecycler.setLayoutManager(eventAttendingRVLayoutManager);
@@ -111,28 +111,35 @@ public class EventListFragment extends Fragment implements
 
         return root;
     }
+
     @Override
-    public void onPause(){
+    public void onPause() {
         if (mGoogleApiClient.isConnected()) {
             stopLocationUpdates();
         }
         super.onPause();
     }
+
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
-        if (mGoogleApiClient.isConnected()){
+        if (mGoogleApiClient.isConnected()) {
             startLocationUpdates();
         }
     }
+
     @Override
-    public void onStop(){
+    public void onStop() {
         mGoogleApiClient.disconnect();
         super.onStop();
     }
 
     @Override
-    public void onConnected(Bundle bundle){
+    public void onConnected(Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
+        }
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null){

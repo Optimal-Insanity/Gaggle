@@ -22,7 +22,7 @@
 
     <string name="action_settings">Settings</string>
 
-    <string name="my_groups">My Gaggles</string>
+    <string name="my_connections">My Connections</string>
     <string name="my_events">My Events</string>
     <string name="area_events">Events in My Area</string>
     <string name="attending_events">Events I\'m Attending</string>
