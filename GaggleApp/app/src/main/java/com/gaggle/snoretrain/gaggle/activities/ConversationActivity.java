@@ -51,18 +51,10 @@ public class ConversationActivity extends AppCompatActivity implements GaggleApp
         transaction.replace(R.id.fragment_messages, conversationFragment);
         transaction.addToBackStack(null);
         transaction.commit();
-
         sendMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Interactor interactor = new ApiInteractor.Builder()
-                        .setAdapterMethod("sendMessage")
-                        .setMethodParameters(receiverId, messageText.getText().toString())
-                        .setMethodParameterTypes(int.class, String.class)
-                        .build();
-                ViewPresenter presenter = new ViewPresenter(ConversationActivity.this, interactor);
-                presenter.getData();
-                messageText.setText("");
+                sendMessage();
             }
         });
     }
@@ -85,5 +77,15 @@ public class ConversationActivity extends AppCompatActivity implements GaggleApp
     @Override
     public void presentGaggleData(MessagesModel data) {
         conversationFragment.updateMessages(data.getMessages());
+    }
+    public void sendMessage(){
+        Interactor interactor = new ApiInteractor.Builder()
+                .setAdapterMethod("sendMessage")
+                .setMethodParameters(receiverId, messageText.getText().toString())
+                .setMethodParameterTypes(int.class, String.class)
+                .build();
+        ViewPresenter presenter = new ViewPresenter(ConversationActivity.this, interactor);
+        presenter.getData();
+        messageText.setText("");
     }
 }

@@ -216,11 +216,11 @@ public class StartActivity extends AppCompatActivity implements LoaderCallbacks<
 
     @Override
     public void presentGaggleData(UserModel data) {
+        showProgress(false);
         if (data != null) {
             ApiValues.USER_TOKEN = data.getToken();
             Intent intent = new Intent(StartActivity.this, NavActivity.class);
             intent.putExtra("UserObj", data);
-            showProgress(false);
             startActivity(intent);
         }
     }

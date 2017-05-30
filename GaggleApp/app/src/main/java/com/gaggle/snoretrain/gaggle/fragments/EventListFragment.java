@@ -97,14 +97,6 @@ public class EventListFragment extends Fragment implements
         dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.vp_margin, getContext().getTheme()));
         eventRecycler.addItemDecoration(dividerItemDecoration);
         eventRecycler.setLayoutManager(eventAttendingRVLayoutManager);
-        /*eventCallbackListener = new IEventCallbackListener() {
-            @Override
-            public void onSearchCallBack(EventListModel eventModels) {
-                eventRVAdapter = new EventRVAdapter(eventModels);
-                eventRecycler.setAdapter(eventRVAdapter);
-                //get the llm for this activity and make recycler use it
-            }
-        };*/
 
         return root;
     }
@@ -262,7 +254,7 @@ public class EventListFragment extends Fragment implements
 
     @Override
     public void presentGaggleData(EventListModel data) {
-        eventRVAdapter = new EventRVAdapter(data);
+        eventRVAdapter = new EventRVAdapter(data.getEvents());
         eventRecycler.setAdapter(eventRVAdapter);
     }
 }

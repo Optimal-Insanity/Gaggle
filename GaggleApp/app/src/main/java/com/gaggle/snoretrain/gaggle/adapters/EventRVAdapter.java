@@ -10,16 +10,18 @@ import com.gaggle.snoretrain.gaggle.models.EventListModel;
 import com.gaggle.snoretrain.gaggle.viewholders.EventViewHolder;
 import com.gaggle.snoretrain.gaggle.models.EventModel;
 
+import java.util.ArrayList;
+
 /**
  * Created by Snore Train on 2/19/2017.
  */
 
 public class EventRVAdapter extends RecyclerView.Adapter<EventViewHolder> {
 
-    private EventListModel eventModels;
+    private ArrayList<EventModel> eventModels;
     private int expandedPosition;
 
-    public EventRVAdapter(EventListModel newDataSet){
+    public EventRVAdapter(ArrayList<EventModel> newDataSet){
         expandedPosition = -1;
         eventModels = newDataSet;
     }
@@ -38,7 +40,7 @@ public class EventRVAdapter extends RecyclerView.Adapter<EventViewHolder> {
         if (eventModels == null){
             return;
         }
-        final EventModel party = eventModels.getEvent(position);
+        final EventModel party = eventModels.get(position);
         holder.bind(party);
 
         final boolean isExpanded = position == expandedPosition;

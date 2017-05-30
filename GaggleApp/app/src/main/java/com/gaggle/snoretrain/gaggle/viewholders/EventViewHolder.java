@@ -56,7 +56,7 @@ public class EventViewHolder extends RecyclerView.ViewHolder {
 
 
     }
-    public int getResource(String eventType){
+    private int getResource(String eventType){
         if (eventType.equals("Outdoor"))
             return R.drawable.outdoor_icon;
         if (eventType.equals("Kickback"))

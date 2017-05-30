@@ -70,7 +70,7 @@ public class AttendingEventListFragment extends Fragment {
                 } else {
                     EventListModel partyData = gson.fromJson(response.body().charStream(), EventListModel.class);
                     //Create new adapter of EventRVAdapter type and set RV adapter to it
-                    AttendingEventRVAdapter eventAttendingRVAdapter = new AttendingEventRVAdapter(partyData);
+                    AttendingEventRVAdapter eventAttendingRVAdapter = new AttendingEventRVAdapter(partyData.getEvents());
                     partyRecycler.setAdapter(eventAttendingRVAdapter);
 
                     //get the llm for this activity and make recycler use it

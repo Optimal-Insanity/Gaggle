@@ -55,7 +55,7 @@ public class ApiInteractor implements Interactor{
                 method = cls.getDeclaredMethod(methodName);
                 observable = (Observable) method.invoke(obj);
             }
-            return observable.subscribeOn(Schedulers.newThread())
+            return observable.subscribeOn(Schedulers.io())
                     .map(new Func1() {
                         @Override
                         public Object call(Object o) {
